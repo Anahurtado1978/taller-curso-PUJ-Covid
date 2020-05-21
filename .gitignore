@@ -28,3 +28,4 @@ vignettes/*.pdf
 .Renviron
 /data/
 /salidas/
+/*.html
