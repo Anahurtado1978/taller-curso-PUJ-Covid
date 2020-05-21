@@ -5,7 +5,7 @@ output:
     df_print: paged
 ---
 
-```{r configuracion}
+```{r configuracion, echo=FALSE}
 
 source("00-Configuracion.R")
 source("10-Obtener-datos-INS.R")
@@ -220,6 +220,8 @@ file_curva_pdf  <-
    paste0("salidas/", hoy, "-c19-curva-epidemica-final-", per_fin_not, ".pdf")
  
 ggsave(file_curva_pdf, plot = It_plot, height = 8, width = 11 )
+
+It_plot_final <- It_plot
 
 It_plot
 
