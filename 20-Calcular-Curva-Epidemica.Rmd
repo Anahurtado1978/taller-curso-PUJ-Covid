@@ -1,5 +1,5 @@
 ---
-title: "20 Calcular Curva para Cali"
+title: "20 Calcular Curva Epidemica para Cali"
 output:
   html_document:
     df_print: paged

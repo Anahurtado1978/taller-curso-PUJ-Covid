@@ -1,5 +1,5 @@
 ---
-title: "R Notebook"
+title: "20 Calcular Número Efectivo de Reproducción para Cali"
 output: html_notebook
 ---
 
@@ -39,14 +39,14 @@ paleta_sexo <- c(
 
 
 
-```{r simul-SI}
+```{r simul-SI, warning=FALSE}
 
 # parametros estimacion
 
 mean_covid19_si <- 6.8 # 6.5
 sd_covid19_si   <- 4.7 # 0.62
 
-k = 5 # número de dias ponderados para estimar Rt en cada t
+k = 3 # número de dias ponderados para estimar Rt en cada t
 
 t_start <- seq(2, nrow(inc.casos)-(k-1))   
 t_end <- t_start + (k-1)  

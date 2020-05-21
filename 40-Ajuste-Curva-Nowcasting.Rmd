@@ -1,0 +1,7 @@
+---
+title: "40 Ajuste de Curva por Nowcasting para Cali"
+output: html_notebook
+---
+
+Próxima sesión
+

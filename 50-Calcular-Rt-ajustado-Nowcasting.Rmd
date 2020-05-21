@@ -1,0 +1,6 @@
+---
+title: "50 Calcular Rt ajustado por Nowcasting"
+output: html_notebook
+---
+
+Próxima sesión
