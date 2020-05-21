@@ -1,0 +1,375 @@
+---
+title: "20 Calcular Curva para Cali"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r configuracion}
+
+source("00-Configuracion.R")
+source("10-Obtener-datos-INS.R")
+
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE
+)
+
+# fecha actual
+hoy <- format(Sys.Date(), "%Y-%m-%d")
+
+# Personalizar paletas de colores para las curvas epidemicas
+
+paleta_cf <- c(
+  "Confirmados" = "orange",
+  "Fallecidos"  = "blue"
+)
+
+paleta_pcf <- c(
+  "Probables"   = "lightblue",
+  "Confirmados" = "orange",
+  "Fallecidos"  = "blue"
+)
+
+paleta_sexo <- c(
+  "M" = "red",
+  "F"  = "blue"
+)
+
+```
+
+## Distibución de Casos - Cali
+
+```{r distribucion-casos}
+
+kable(with(df.ins.cali, addmargins(table(tipo))),
+      caption = "Distribución por tipo [importado] (INS)",
+      col.names = c("Tipo de caso", "n"))
+
+kable(with(df.ins.cali, addmargins(table(atenci_n))),
+      caption = "Distribución por atención (INS)",
+      col.names = c("Atención", "n"))
+
+kable(with(df.ins.cali, addmargins(table(estado))),
+      caption = "Distribución por estado (INS)",
+      col.names = c("Estado", "n"))
+
+kable(with(df.ins.cali, addmargins(table(sexo))),
+      caption = "Distribución por sexo",
+      col.names = c("Tipo de caso", "n"))
+
+kable(with(df.ins.cali, addmargins(table(tipo_caso))),
+      caption = "Distribución por tipo caso",
+      col.names = c("Tipo de caso", "n"))
+
+```
+
+## Curva Epidémica - Cali
+
+```{r curva-epidemica}
+
+# fechas intervenciones
+fecha_toquequeda  <- as.Date("2020-03-20")
+fecha_cuarentena  <- as.Date("2020-03-25")
+fecha_cuarentena1 <- as.Date("2020-04-27") # lev parcial cuarentena
+
+# Fecha de notificacion mas reciente
+per_fin_not <- max(df.ins.cali$fecha_not)
+
+# preparacion datos para Curva
+
+# Incidencia - datos para analisis
+
+# Fallecidos y Confirmados por fecha sintomas
+inc.casos   <- incidence(df.ins.cali$fecha_sin)
+max_ncasos  <- max(inc.casos$counts)
+per_ini_sin <- as.Date(min(inc.casos$dates))
+per_fin_sin <- as.Date(max(inc.casos$dates))
+
+# Incidencia - datos para figura por tipo de caso
+inc.casos.tipo <- incidence(df.ins.cali$fecha_sin,
+                            groups = df.ins.cali$tipo_caso)
+
+# Eje x: 3 dias antes del 1er caso hasta 3 dias despues de hoy
+xt_min = as.Date(per_ini_sin) - lubridate::days(3)
+xt_max = as.Date(hoy) + lubridate::days(3)
+
+
+```
+
+```{r}
+
+It_plot <- plot(inc.casos.tipo, stack = FALSE, border = "white")
+
+It_plot
+
+```
+
+```{r}
+
+It_plot <- plot(inc.casos.tipo, stack = TRUE, border = "white")
+
+It_plot
+
+```
+
+```{r}
+
+It_plot <- plot(inc.casos.tipo, stack = TRUE, border = "white") +
+  scale_fill_manual(values = paleta_cf, limits = names(paleta_cf)) +
+  labs(x = "Fecha de Síntomas", y = "Casos") +
+  theme_classic2()
+
+file_curva_pdf  <- 
+   paste0("salidas/", hoy, "-c19-curva-epidemica-v1-", per_fin_not, ".pdf")
+ 
+ggsave(file_curva_pdf, plot = It_plot, height = 8, width = 11 )
+
+It_plot
+
+```
+
+```{r}
+
+It_plot <- plot(inc.casos.tipo, stack = TRUE, border = "white") +
+  scale_fill_manual(values = paleta_cf, limits = names(paleta_cf)) +
+  labs(x = "Fecha de Síntomas", y = "Casos") +
+  theme_classic2() +
+  geom_vline(xintercept = fecha_cuarentena, linetype = "dashed", color = "red") +
+  annotate(
+    "text",
+    label = "Cuarentena",
+    x = fecha_cuarentena,
+    y = max_ncasos + 1,
+    hjust = 1, angle = 90, vjust = -0.2
+  )
+
+file_curva_pdf  <- 
+   paste0("salidas/", hoy, "-c19-curva-epidemica-v2-", per_fin_not, ".pdf")
+ 
+ggsave(file_curva_pdf, plot = It_plot, height = 8, width = 11 )
+
+It_plot
+
+```
+
+
+
+
+```{r}
+
+# Generacion de la Curva - por tipo de caso
+It_plot <- plot(inc.casos.tipo, stack = TRUE, border = "white") +
+  scale_fill_manual(values = paleta_cf, limits = names(paleta_cf)) +
+  labs(x = "Fecha de Síntomas", y = "Casos")  +
+  theme_classic2() +
+  geom_vline(xintercept = fecha_cuarentena, linetype = "dashed", color = "red") +
+  annotate(
+    "text",
+    label = "Cuarentena",
+    x = fecha_cuarentena,
+    y = max_ncasos + 1,
+    hjust = 1, angle = 90, vjust = -0.2
+  ) +
+  geom_vline(xintercept = fecha_toquequeda, linetype = "dashed", color = "red") +
+  annotate(
+    "text",
+    label = "Toque de queda",
+    x = fecha_toquequeda,
+    y = max_ncasos + 1,
+    hjust = 1, angle = 90, vjust = -0.2
+  ) +
+  geom_vline(xintercept = fecha_cuarentena1, linetype = "dashed", color = "red") +
+  annotate(
+    "text",
+    label = "C. parcial",
+    x = fecha_cuarentena1,
+    y = max_ncasos + 1,
+    hjust = 1, angle = 90, vjust = -0.2
+  ) +
+  geom_vline(xintercept = per_ini_sin, linetype = "dashed", color = "red") +
+  annotate(
+    "text",
+    label = "1er caso",
+    x = per_ini_sin,
+    y = max_ncasos + 1,
+    hjust = 1, angle = 90, vjust = -0.2
+  ) +
+  geom_vline(xintercept = as.Date(hoy), linetype = "dashed", color = "green") +
+  annotate(
+    "text",
+    label = "Hoy",
+    x = as.Date(hoy),
+    y = max_ncasos + 1,
+    hjust = 1, angle = 90, vjust = -0.2
+  ) +
+  scale_x_date(
+    date_labels = "%b %d",
+    date_breaks = "1 week",
+    limits = c(xt_min, xt_max)
+  ) +
+  ggtitle(paste0("Curva Epidémica, COVID-19, Cali")) + 
+  theme(
+    legend.position = "top",
+    legend.direction = "horizontal",
+    legend.title = element_blank()
+  )
+
+file_curva_pdf  <- 
+   paste0("salidas/", hoy, "-c19-curva-epidemica-final-", per_fin_not, ".pdf")
+ 
+ggsave(file_curva_pdf, plot = It_plot, height = 8, width = 11 )
+
+It_plot
+
+```
+
+```{r}
+
+# Incidencia - datos para figura por sexo
+inc.casos.sexo <- incidence(df.ins.cali$fecha_sin,
+                            groups = df.ins.cali$sexo)
+
+head(inc.casos.sexo)
+
+```
+
+```{r}
+
+# Generacion de la Curva - por Sexo
+
+It_plot <- plot(inc.casos.sexo, stack = TRUE, border = "white") +
+  scale_fill_manual(values = paleta_sexo, limits = names(paleta_sexo)) +
+  labs(x = "Fecha de Síntomas", y = "Casos")  +
+  theme_classic2() +
+  geom_vline(xintercept = fecha_cuarentena, linetype = "dashed", color = "red") +
+  annotate(
+    "text",
+    label = "Cuarentena",
+    x = fecha_cuarentena,
+    y = max_ncasos + 1,
+    hjust = 1, angle = 90, vjust = -0.2
+  ) +
+  geom_vline(xintercept = fecha_toquequeda, linetype = "dashed", color = "red") +
+  annotate(
+    "text",
+    label = "Toque de queda",
+    x = fecha_toquequeda,
+    y = max_ncasos + 1,
+    hjust = 1, angle = 90, vjust = -0.2
+  ) +
+  geom_vline(xintercept = fecha_cuarentena1, linetype = "dashed", color = "red") +
+  annotate(
+    "text",
+    label = "C. parcial",
+    x = fecha_cuarentena1,
+    y = max_ncasos + 1,
+    hjust = 1, angle = 90, vjust = -0.2
+  ) +
+  geom_vline(xintercept = per_ini_sin, linetype = "dashed", color = "red") +
+  annotate(
+    "text",
+    label = "1er caso",
+    x = per_ini_sin,
+    y = max_ncasos + 1,
+    hjust = 1, angle = 90, vjust = -0.2
+  ) +
+  geom_vline(xintercept = as.Date(hoy), linetype = "dashed", color = "green") +
+  annotate(
+    "text",
+    label = "Hoy",
+    x = as.Date(hoy),
+    y = max_ncasos + 1,
+    hjust = 1, angle = 90, vjust = -0.2
+  ) +
+  scale_x_date(
+    date_labels = "%b %d",
+    date_breaks = "1 week",
+    limits = c(xt_min, xt_max)
+  ) +
+  ggtitle(paste0("Curva Epidémica, COVID-19, Cali")) + 
+  theme(
+    legend.position = "top",
+    legend.direction = "horizontal",
+    legend.title = element_blank()
+  )
+
+file_curva_pdf  <- 
+   paste0("salidas/", hoy, "-c19-curva-epidemica-sexo-", per_fin_not, ".pdf")
+ 
+ggsave(file_curva_pdf, plot = It_plot, height = 8, width = 11 )
+
+It_plot
+
+
+```
+
+```{r}
+# Generacion de la Curva - por Sexo
+
+It_plot <- plot(inc.casos.sexo, stack = FALSE, border = "white") +
+  scale_fill_manual(values = paleta_sexo, limits = names(paleta_sexo)) +
+  labs(x = "Fecha de Síntomas", y = "Casos")  +
+  theme_classic2() +
+  geom_vline(xintercept = fecha_cuarentena, linetype = "dashed", color = "red") +
+  annotate(
+    "text",
+    label = "Cuarentena",
+    x = fecha_cuarentena,
+    y = max_ncasos + 1,
+    hjust = 1, angle = 90, vjust = -0.2
+  ) +
+  geom_vline(xintercept = fecha_toquequeda, linetype = "dashed", color = "red") +
+  annotate(
+    "text",
+    label = "Toque de queda",
+    x = fecha_toquequeda,
+    y = max_ncasos + 1,
+    hjust = 1, angle = 90, vjust = -0.2
+  ) +
+  geom_vline(xintercept = fecha_cuarentena1, linetype = "dashed", color = "red") +
+  annotate(
+    "text",
+    label = "C. parcial",
+    x = fecha_cuarentena1,
+    y = max_ncasos + 1,
+    hjust = 1, angle = 90, vjust = -0.2
+  ) +
+  geom_vline(xintercept = per_ini_sin, linetype = "dashed", color = "red") +
+  annotate(
+    "text",
+    label = "1er caso",
+    x = per_ini_sin,
+    y = max_ncasos + 1,
+    hjust = 1, angle = 90, vjust = -0.2
+  ) +
+  geom_vline(xintercept = as.Date(hoy), linetype = "dashed", color = "green") +
+  annotate(
+    "text",
+    label = "Hoy",
+    x = as.Date(hoy),
+    y = max_ncasos + 1,
+    hjust = 1, angle = 90, vjust = -0.2
+  ) +
+  scale_x_date(
+    date_labels = "%b %d",
+    date_breaks = "1 week",
+    limits = c(xt_min, xt_max)
+  ) +
+  ggtitle(paste0("Curva Epidémica, COVID-19, Cali")) + 
+  theme(
+    legend.position = "top",
+    legend.direction = "horizontal",
+    legend.title = element_blank()
+  )
+
+file_curva_pdf  <- 
+   paste0("salidas/", hoy, "-c19-curva-epidemica-sexo-sep-", per_fin_not, ".pdf")
+ 
+ggsave(file_curva_pdf, plot = It_plot, height = 8, width = 11 )
+
+It_plot
+
+```
+

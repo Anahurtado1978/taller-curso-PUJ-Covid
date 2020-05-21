@@ -39,6 +39,7 @@ df.ins <- df.ins %>%
                 fecha_def,
                 everything())
 
+
 if (!dir.exists("data")) {dir.create("data")}
 
 
@@ -61,6 +62,11 @@ write_csv(df.ins.cali,
 write_csv(df.ins.cali,
           paste0("data/", hoy, "-datos_ins-cali-fecnot-", ins_max_fecha_not, ".csv"))
 
+# algunas fechas especificas
+ins_max_fecha_not.cali <- with(df.ins.cali, max(fecha_not, na.rm = TRUE))
+ins_min_fecha_not.cali <- with(df.ins.cali, min(fecha_not, na.rm = TRUE))
+ins_max_fecha_sin.cali <- with(df.ins.cali, max(fecha_sin, na.rm = TRUE))
+ins_min_fecha_sin.cali <- with(df.ins.cali, min(fecha_sin, na.rm = TRUE))
 
 # Palmira
 df.ins.palmira <- df.ins %>%

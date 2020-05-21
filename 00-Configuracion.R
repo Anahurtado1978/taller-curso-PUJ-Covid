@@ -7,7 +7,7 @@
 packages <-
   c(
     "forcats","ggpubr","gghighlight", "RSocrata",
-    "here", "sf", "rgeos","NobBS","earlyR",
+    "here", "sf", "rgeos", "earlyR",
     "curl","projections","incidence","EpiEstim",
     "rJava","bayesplot","cowplot","gridExtra", "ps",
     "rmarkdown", "geoR","glue","usethis",
@@ -74,14 +74,3 @@ if (!dir.exists("imagenes"))  {dir.create("imagenes")}
 if (!dir.exists("funciones")) {dir.create("funciones")}
 if (!dir.exists("shapes"))    {dir.create("shapes")}
 
-# Personalizar paletas de colores para las curvas epidemicas
-mipal_cf <- c(
-  "Confirmados" = "orange",
-  "Fallecidos"  = "blue"
-)
-
-mipal <- c(
-  "Probables"   = "lightblue",
-  "Confirmados" = "orange",
-  "Fallecidos"  = "blue"
-)
