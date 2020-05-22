@@ -4,7 +4,6 @@
 # Crea subdirectorios
 
 
-
 # Lista de paquetes a instalar
 packages <-
   c(
