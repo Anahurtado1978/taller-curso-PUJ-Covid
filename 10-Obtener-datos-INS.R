@@ -83,7 +83,7 @@ write_csv(df.ins.bventura,
           paste0("data/", hoy, "-datos_ins-bventura-fecnot-", ins_max_fecha_not, ".csv"))
 
 
-# Valle del Cauca
+# Valle del Cauca - >= 25 casos
 df.ins.valle <- df.ins %>%
   filter(codigo_divipola>="76000" & codigo_divipola<="76999")
 write_csv(df.ins.valle,
