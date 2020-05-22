@@ -1,5 +1,7 @@
 # 10-Obtener-datos-INS
 
+library(tidyverse)
+
 # Fecha actual
 hoy <- as.Date(format(Sys.Date(), "%Y-%m-%d"))
 

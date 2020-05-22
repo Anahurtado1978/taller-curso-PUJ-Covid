@@ -46,6 +46,8 @@ paleta_sexo <- c(
 
 ```{r distribucion-casos}
 
+
+
 kable(with(df.casos, addmargins(table(tipo))),
       caption = "Distribución por tipo [importado/relacionado]",
       col.names = c("Tipo de caso", "n"))
