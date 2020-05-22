@@ -3,16 +3,19 @@
 # Instala los paquetes R requeridos
 # Crea subdirectorios
 
-# Paquetes a instalar
+
+
+# Lista de paquetes a instalar
 packages <-
   c(
+    "tidyverse", "tibble",
     "forcats","ggpubr","gghighlight", "RSocrata",
     "here", "sf", "rgeos", "earlyR",
     "curl","projections","incidence","EpiEstim",
     "rJava","bayesplot","cowplot","gridExtra", "ps",
     "rmarkdown", "geoR","glue","usethis",
     "tinytex","digest", "testthat","processx","reshape2",
-    "data.table", "readxl", "tidyverse",
+    "data.table", "readxl",
     "xlsx", "readr", "dplyr", "stringr", "knitr", "tidyr",
     "foreign", "DataExplorer", "formattable",
     "survival", "xtable", "officer", "DescTools",
@@ -21,21 +24,23 @@ packages <-
     "hexbin","gganimate","gifski","png","transformr","av"
   )
 
-# Algunos paquetes se instalan desde github
-pkgs_from_github <- c("tidyverse/ggplot2")
+# Lista de paquetes adicionales que se instalan desde github
+pkgs_from_github <-
+  c(
+    "tidyverse/ggplot2",
+    "tidyverse/tibble"
+    )
 
 
-# Instalar packages
-new.packages <- packages[!(packages %in% installed.packages()[, "Package"])]
-for (package in new.packages) {
-  if (!require(package, character.only = T, quietly = T)) {
-    install.packages(package, dependencies = T)
-    library(package, character.only = T)
-  }
-  library(package, character.only = T)
+# Instalación de paquetes
+
+# Instalar paquetes de github primero
+
+if (!require("devtools") & length(pkgs_from_github) > 0) {
+  install.packages("devtools")
+  library(devtools)
 }
 
-# Instalar paquetes de github
 for (pkg_github in pkgs_from_github) {
   pkg_name <- strsplit(pkg_github,"/")[[1]][2] # get name after forward-slash
   if (!require(pkg_name, character.only = T, quietly = T)) {
@@ -51,10 +56,39 @@ for (package in pkgs_from_github) {
   library(pkg_name, character.only = T)
 }
 
-# Cargar los paquetes instalados
+# Instalar el resto de packages
+
+new.packages <- packages[!(packages %in% installed.packages()[, "Package"])]
+
+for (package in new.packages) {
+  if (!require(package, character.only = T, quietly = T)) {
+    install.packages(package, dependencies = T)
+    library(package, character.only = T)
+  }
+  library(package, character.only = T)
+}
+
+# Cargar el resto de paquetes instalados
 for (package in packages) {
   library(package, character.only = T)
 }
+
+# forzar instalacion de versiones especificas de paquetes
+devtools::install_version("tibble", version = "3.0.1")
+# repos = "http://cran.us.r-project.org"
+library(tibble)
+
+# Crear subdirectorios del proyecto
+
+if (!dir.exists("data"))      {dir.create("data")}
+if (!dir.exists("salidas"))   {dir.create("salidas")}
+if (!dir.exists("figuras"))   {dir.create("figuras")}
+if (!dir.exists("imagenes"))  {dir.create("imagenes")}
+if (!dir.exists("funciones")) {dir.create("funciones")}
+if (!dir.exists("shapes"))    {dir.create("shapes")}
+
+
+# Funciones definidas por usuario
 
 # Funcion para corregir año en algunas fechas con error e.g. 1950
 correct_year <- function(xdate, year_ok) {
@@ -65,12 +99,3 @@ correct_year <- function(xdate, year_ok) {
                        day   = mday(xdate)
   )
 }
-
-# Crear subdirectorios
-if (!dir.exists("data"))      {dir.create("data")}
-if (!dir.exists("salidas"))   {dir.create("salidas")}
-if (!dir.exists("figuras"))   {dir.create("figuras")}
-if (!dir.exists("imagenes"))  {dir.create("imagenes")}
-if (!dir.exists("funciones")) {dir.create("funciones")}
-if (!dir.exists("shapes"))    {dir.create("shapes")}
-
