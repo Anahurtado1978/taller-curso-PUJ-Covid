@@ -1,20 +1,23 @@
 ---
-title: "20 Calcular Curva Epidemica para Cali"
+title: "20 Calcular Curva Epidemica para el Valle del Cauca"
 output:
   html_document:
     df_print: paged
 ---
 
 ```{r configuracion, echo=FALSE}
-
-# source("00-Configuracion.R")
-# source("10-Obtener-datos-INS.R")
-
 knitr::opts_chunk$set(
 	echo = FALSE,
 	message = FALSE,
 	warning = FALSE
 )
+
+# source("00-Configuracion.R")
+# source("10-Obtener-datos-INS.R")
+
+# definir el conjunto de analisis
+df.casos <- df.ins.valle
+df.casos$persona <- 1.0
 
 # fecha actual
 hoy <- format(Sys.Date(), "%Y-%m-%d")
@@ -39,57 +42,69 @@ paleta_sexo <- c(
 
 ```
 
-## Distibución de Casos - Cali
+## Distibución de Casos
 
 ```{r distribucion-casos}
 
-kable(with(df.ins.cali, addmargins(table(tipo))),
-      caption = "Distribución por tipo [importado] (INS)",
+kable(with(df.casos, addmargins(table(tipo))),
+      caption = "Distribución por tipo [importado/relacionado]",
       col.names = c("Tipo de caso", "n"))
 
-kable(with(df.ins.cali, addmargins(table(atenci_n))),
+kable(with(df.casos, addmargins(table(atenci_n))),
       caption = "Distribución por atención (INS)",
       col.names = c("Atención", "n"))
 
-kable(with(df.ins.cali, addmargins(table(estado))),
+kable(with(df.casos, addmargins(table(estado))),
       caption = "Distribución por estado (INS)",
       col.names = c("Estado", "n"))
 
-kable(with(df.ins.cali, addmargins(table(sexo))),
+kable(with(df.casos, addmargins(table(sexo))),
       caption = "Distribución por sexo",
       col.names = c("Tipo de caso", "n"))
 
-kable(with(df.ins.cali, addmargins(table(tipo_caso))),
+kable(with(df.casos, addmargins(table(tipo_caso))),
       caption = "Distribución por tipo caso",
       col.names = c("Tipo de caso", "n"))
 
+kable(with(df.casos, addmargins(table(ciudad_de_ubicaci_n))),
+      caption = "Distribución por municipio",
+      col.names = c("Municipio", "n"))
+
+df.casos %>%
+  group_by(ciudad_de_ubicaci_n) %>%
+  tally(name="casos") %>%
+  mutate(porcentaje = round((casos/sum(casos)*100))) %>%
+  arrange(desc(casos)) %>%
+  head(100) %>%
+  kable
+
 ```
 
-## Curva Epidémica - Cali
+## Curva Epidémica
 
 ```{r curva-epidemica}
 
 # fechas intervenciones
 fecha_toquequeda  <- as.Date("2020-03-20")
 fecha_cuarentena  <- as.Date("2020-03-25")
-fecha_cuarentena1 <- as.Date("2020-04-27") # lev parcial cuarentena
+fecha_cuarentena1 <- as.Date("2020-04-27") # parcial cuarentena
 
 # Fecha de notificacion mas reciente
-per_fin_not <- max(df.ins.cali$fecha_not)
+per_fin_not <- max(df.casos$fecha_not)
 
 # preparacion datos para Curva
 
 # Incidencia - datos para analisis
 
 # Fallecidos y Confirmados por fecha sintomas
-inc.casos   <- incidence(df.ins.cali$fecha_sin)
+inc.casos   <- incidence(df.casos$fecha_sin)
 max_ncasos  <- max(inc.casos$counts)
 per_ini_sin <- as.Date(min(inc.casos$dates))
 per_fin_sin <- as.Date(max(inc.casos$dates))
 
 # Incidencia - datos para figura por tipo de caso
-inc.casos.tipo <- incidence(df.ins.cali$fecha_sin,
-                            groups = df.ins.cali$tipo_caso)
+inc.casos.tipo <- incidence(df.casos$fecha_sin,
+                            groups = df.casos$tipo_caso)
 
 # Eje x: 3 dias antes del 1er caso hasta 3 dias despues de hoy
 xt_min = as.Date(per_ini_sin) - lubridate::days(3)
@@ -209,7 +224,7 @@ It_plot <- plot(inc.casos.tipo, stack = TRUE, border = "white") +
     date_breaks = "1 week",
     limits = c(xt_min, xt_max)
   ) +
-  ggtitle(paste0("Curva Epidémica, COVID-19, Cali")) + 
+  ggtitle(paste0("Curva Epidémica, COVID-19, Valle del Cauca")) + 
   theme(
     legend.position = "top",
     legend.direction = "horizontal",
@@ -230,8 +245,8 @@ It_plot
 ```{r}
 
 # Incidencia - datos para figura por sexo
-inc.casos.sexo <- incidence(df.ins.cali$fecha_sin,
-                            groups = df.ins.cali$sexo)
+inc.casos.sexo <- incidence(df.casos$fecha_sin,
+                            groups = df.casos$sexo)
 
 head(inc.casos.sexo)
 
@@ -290,7 +305,7 @@ It_plot <- plot(inc.casos.sexo, stack = TRUE, border = "white") +
     date_breaks = "1 week",
     limits = c(xt_min, xt_max)
   ) +
-  ggtitle(paste0("Curva Epidémica, COVID-19, Cali")) + 
+  ggtitle(paste0("Curva Epidémica, COVID-19, Valle del Cauca")) + 
   theme(
     legend.position = "top",
     legend.direction = "horizontal",
@@ -359,7 +374,7 @@ It_plot <- plot(inc.casos.sexo, stack = FALSE, border = "white") +
     date_breaks = "1 week",
     limits = c(xt_min, xt_max)
   ) +
-  ggtitle(paste0("Curva Epidémica, COVID-19, Cali")) + 
+  ggtitle(paste0("Curva Epidémica, COVID-19, Valle del Cauca")) + 
   theme(
     legend.position = "top",
     legend.direction = "horizontal",

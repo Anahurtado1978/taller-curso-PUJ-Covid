@@ -8,7 +8,7 @@
 # Lista de paquetes a instalar
 packages <-
   c(
-    "tidyverse", "tibble",
+    "tidyverse", "tibble","rlang",
     "forcats","ggpubr","gghighlight", "RSocrata",
     "here", "sf", "rgeos", "earlyR",
     "curl","projections","incidence","EpiEstim",
