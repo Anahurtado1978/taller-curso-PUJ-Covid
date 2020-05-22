@@ -1,6 +1,8 @@
 ---
 title: "20 Calcular Número Efectivo de Reproducción para Cali"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 ---
 
 ```{r configuracion, echo=FALSE}

@@ -67,6 +67,8 @@ kable(with(df.ins.cali, addmargins(table(tipo_caso))),
 
 ## Curva Epidémica - Cali
 
+En esta sección se estima la curva epidemica.
+
 ```{r curva-epidemica}
 
 # fechas intervenciones
