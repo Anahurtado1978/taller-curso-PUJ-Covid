@@ -3,9 +3,13 @@
 # Instala los paquetes R requeridos
 # Crea subdirectorios
 
-
+# Actualizar paquetes actualmente en su pc
+#  quitar comentario en la siguiente linea
+#  el proceso se demora ~20+ minutos en algunos casos
+# update.packages(ask = FALSE, dependencies = c('Suggests'))
 
 # Lista de paquetes a instalar
+
 packages <-
   c(
     "tidyverse", "tibble",
@@ -13,7 +17,7 @@ packages <-
     "here", "sf", "rgeos", "earlyR",
     "curl","projections","incidence","EpiEstim",
     "rJava","bayesplot","cowplot","gridExtra", "ps",
-    "rmarkdown", "geoR","glue","usethis",
+    "rmarkdown", "geoR", "usethis","glue",
     "tinytex","digest", "testthat","processx","reshape2",
     "data.table", "readxl",
     "xlsx", "readr", "dplyr", "stringr", "knitr", "tidyr",
@@ -24,7 +28,9 @@ packages <-
     "hexbin","gganimate","gifski","png","transformr","av"
   )
 
+
 # Lista de paquetes adicionales que se instalan desde github
+
 pkgs_from_github <-
   c(
     "tidyverse/ggplot2",
@@ -37,14 +43,14 @@ pkgs_from_github <-
 # Instalar paquetes de github primero
 
 if (!require("devtools") & length(pkgs_from_github) > 0) {
-  install.packages("devtools")
+  install.packages("devtools", dependencies = TRUE, INSTALL_opts = '--no-lock')
   library(devtools)
 }
 
 for (pkg_github in pkgs_from_github) {
   pkg_name <- strsplit(pkg_github,"/")[[1]][2] # get name after forward-slash
   if (!require(pkg_name, character.only = T, quietly = T)) {
-    devtools::install_github(pkg_github)
+    devtools::install_github(pkg_github, dependencies = TRUE)
     library(pkg_name, character.only = T)
   }
   library(pkg_name, character.only = T)
@@ -58,11 +64,16 @@ for (package in pkgs_from_github) {
 
 # Instalar el resto de packages
 
-new.packages <- packages[!(packages %in% installed.packages()[, "Package"])]
+new.packages <- packages
+
+# quitar comentario a la linea siguiente si desea instalar
+# solo paquetes nuevos en la lista packages
+
+# new.packages <- packages[!(packages %in% installed.packages()[, "Package"])]
 
 for (package in new.packages) {
   if (!require(package, character.only = T, quietly = T)) {
-    install.packages(package, dependencies = T)
+    install.packages(package, dependencies = TRUE, INSTALL_opts = '--no-lock')
     library(package, character.only = T)
   }
   library(package, character.only = T)
@@ -74,7 +85,7 @@ for (package in packages) {
 }
 
 # forzar instalacion de versiones especificas de paquetes
-devtools::install_version("tibble", version = "3.0.1")
+devtools::install_version("tibble", version = "3.0.1", dependencies = TRUE)
 # repos = "http://cran.us.r-project.org"
 library(tibble)
 
