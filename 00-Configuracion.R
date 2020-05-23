@@ -16,7 +16,7 @@ if (!require(devtools)) {
 
 paquetes <-
   c("Rcpp", "forcats","ggpubr","gghighlight",
-    "RSocrata", "tidyverse", "rlang",
+    "RSocrata",  "rlang",
     "here", "sf", "rgeos", "earlyR",
     "curl", "projections", "incidence", "EpiEstim",
     "rJava","bayesplot","cowplot","gridExtra", "ps",
