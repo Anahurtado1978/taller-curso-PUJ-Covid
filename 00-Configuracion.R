@@ -15,7 +15,7 @@ if (!require(devtools)) {
 # Lista de paquetes a instalar
 
 paquetes <-
-  c("Rcpp", "forcats","ggpubr","gghighlight",
+  c("Rcpp", "ggpubr","gghighlight",
     "RSocrata",  "rlang",
     "here", "sf", "rgeos", "earlyR",
     "curl", "projections", "incidence", "EpiEstim",
@@ -29,7 +29,7 @@ paquetes <-
     "DT", "flextable", "pander", "descr", "tables",
     "visdat", "xfun", "tidytext","stringi", "Matrix",
     "hexbin","gganimate","gifski","png",
-    "transformr","av"
+    "transformr","av","forcats"
     )
 
 paquetes_github <-
@@ -40,7 +40,8 @@ paquetes_github <-
 
 paquetes <- unique(paquetes)
 for(pqt in paquetes)
-  install.packages(pqt, dependencies = TRUE)
+  install.packages(pqt, dependencies = TRUE,
+                   INSTALL_opts = '--no-lock')
 sapply(paquetes, require, character = TRUE)
 
 paquetes_github     <- unique(paquetes_github)
@@ -54,7 +55,8 @@ for (pqtgn in paquetes_github) {
 paquetes_github_nom <- unlist(paquetes_github_nom)
 
 for (pqtg in paquetes_github)
-  devtools::install_github(pqtg, dependencies = TRUE)
+  devtools::install_github(pqtg, dependencies = TRUE,
+                           INSTALL_opts = '--no-lock')
 sapply(paquetes_github_nom, require, character = TRUE)
 
 
