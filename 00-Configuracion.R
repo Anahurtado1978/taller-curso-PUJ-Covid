@@ -3,7 +3,15 @@
 # 2. Crea subdirectorios
 # 3. Carga algunas funciones
 
-install.packages("pak")
+
+# usa el paquete pak para admin paquetes
+
+if (!require("pak")) {
+  install.packages("pak")
+  library(pak)
+}
+pak_setup(mode = "auto")
+
 
 # Actualizar paquetes actualmente en su pc
 #  quitar comentario en la siguiente linea
@@ -33,17 +41,15 @@ packages <-
 
 # Instalación de paquetes
 
-new.packages <- packages
+new.packages <- unique(packages)
 # new.packages <- packages[!(packages %in% installed.packages()[, "Package"])]
 
 for (package in new.packages) {
-  if (!require(package, character.only = T, quietly = T)) {
-    pak::pkg_install(package)
-    library(package, character.only = T)
+  if (!require(package)) {
+    pak::pkg_install(package, upgrade = TRUE, ask = FALSE)
+    library(package)
   }
-  library(package, character.only = T)
 }
-
 
 # Crear subdirectorios del proyecto
 
