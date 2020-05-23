@@ -9,8 +9,8 @@ output: pdf_document
 chooseCRANmirror(graphics=FALSE, ind=1)
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 
-source("00-Configuracion.R")
-source("10-Obtener-datos-INS.R")
+# source("00-Configuracion.R")
+# source("10-Obtener-datos-INS.R")
 
 # definir el conjunto de analisis
 df.casos <- df.ins.valle
