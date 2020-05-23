@@ -8,10 +8,7 @@ output:
 ---
 
 ```{r configuracion, include = FALSE}
-chooseCRANmirror(graphics=FALSE, ind=1)
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
-# source("00-Configuracion.R")
-# source("10-Obtener-datos-INS.R")
 ```
 
 
@@ -19,8 +16,8 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 
 # definir el conjunto de analisis
 
-df.casos <- readRDS("data/Valle_nodis.RDS")
-area <- "Valle (sin distritos)" # evitar caracteres
+df.casos <- readRDS("data/Valle.RDS")
+area <- "Valle" # keep this label short
 
 df.casos$persona <- 1.0
 
