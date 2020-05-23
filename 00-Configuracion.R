@@ -3,14 +3,11 @@
 # 2. Crea subdirectorios
 # 3. Carga algunas funciones
 
-
-# usa el paquete pak para admin paquetes
-
-if (!require(pak)) {
-  install.packages("pak")
-  library(pak)
+# instala devtools - puede ser demorado
+if (!require(devtools)) {
+  install.packages("devtools")
+  library(devtools)
 }
-pak_setup(mode = "auto", quiet = TRUE)
 
 # Actualizar paquetes actualmente en su pc
 #  quitar comentario en la siguiente linea
@@ -19,9 +16,10 @@ pak_setup(mode = "auto", quiet = TRUE)
 
 # Lista de paquetes a instalar
 
-packages <-
-  c("tidyverse", "rlang",
+lista_paquetes <-
+  c("tidyverse/ggplot2",
     "forcats","ggpubr","gghighlight", "RSocrata",
+    "tidyverse", "rlang",
     "here", "sf", "rgeos", "earlyR",
     "curl", "projections", "incidence", "EpiEstim",
     "rJava","bayesplot","cowplot","gridExtra", "ps",
@@ -33,29 +31,30 @@ packages <-
     "survival", "xtable", "officer", "DescTools",
     "DT", "flextable", "pander", "descr", "tables",
     "visdat", "xfun", "tidytext","stringi", "Matrix",
-    "hexbin","gganimate","gifski","png","transformr","av",
-    "tidyverse/tibble", "tidyverse/ggplot2")
-
+    "hexbin","gganimate","gifski","png",
+    "tidyverse/tibble",
+    "transformr","av"
+    )
 
 # Instalación de paquetes
 
-new.packages <- unique(packages)
-# new.packages <- packages[!(packages %in% installed.packages()[, "Package"])]
+lista_paquetes <- unique(lista_paquetes)
 
-for (package in new.packages) {
- (paste0("lista este ", package))
+for (pqt in lista_paquetes) {
+  print(pqt)
 }
 
-for (package in new.packages) {
-  pkg_name <- package
-  if ( grepl("/", package) ) {
-    pkg_name <- strsplit(package,"/")[[1]][2] # get name after forward-slash
+pqt_nom <- ""
+for (pqt in lista_paquetes) {
+  print(pqt)
+  if ( grepl("/", pqt) ) {
+    pqt_nom <- as.name(strsplit(pqt,"/")[[1]][2])
+    devtools::install_github(pqt)
+  } else {
+    pqt_nom <- as.name(pqt)
+    install.packages(pqt_nom)
   }
-  if (!require(pkg_name)) {
-    # pak::pkg_install(package, upgrade = TRUE, ask = FALSE)
-    (pkg_name)
-    library(pkg_name)
-  }
+  library(pqt_nom)
 }
 
 # Crear subdirectorios del proyecto
