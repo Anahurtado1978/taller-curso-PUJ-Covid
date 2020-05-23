@@ -15,8 +15,8 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 
 ```{r prep-datos-area}
 # definir el conjunto de analisis
-area <- "Cali"
-df.casos <- df.ins.cali
+area <- "Valle mpios md 25 casos" # evitar caracteres
+df.casos <- df.ins.vre
 df.casos$persona <- 1.0
 
 # fecha actual
@@ -417,5 +417,10 @@ pg_Rt_It
 
 ```
 
+```{r final}
+
+pg_Rt_It
+
+```
 
 
