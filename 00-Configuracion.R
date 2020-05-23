@@ -12,45 +12,95 @@
 
 packages <-
   c(
-    "tidyverse", "tibble","rlang",
-    "forcats","ggpubr","gghighlight", "RSocrata",
-    "here", "sf", "rgeos", "earlyR",
-    "curl","projections","incidence","EpiEstim",
-    "rJava","bayesplot","cowplot","gridExtra", "ps",
-    "rmarkdown", "geoR", "usethis","glue",
-    "tinytex","digest", "testthat","processx","reshape2",
-    "data.table", "readxl",
-    "xlsx", "readr", "dplyr", "stringr", "knitr", "tidyr",
-    "foreign", "DataExplorer", "formattable",
-    "survival", "xtable", "officer", "DescTools",
-    "DT", "flextable", "pander", "descr", "tables",
-    "visdat", "xfun", "tidytext","stringi", "Matrix",
-    "hexbin","gganimate","gifski","png","transformr","av"
+    "rlang",
+    "tidyverse",
+    "usethis",
+    "forcats",
+    "ggpubr",
+    "gghighlight",
+    "RSocrata",
+    "here",
+    "sf",
+    "rgeos",
+    "earlyR",
+    "ellipsis",
+    "curl",
+    "projections",
+    "incidence",
+    "EpiEstim",
+    "rJava",
+    "bayesplot",
+    "cowplot",
+    "gridExtra",
+    "ps",
+    "rmarkdown",
+    "geoR",
+    "usethis",
+    "glue",
+    "tinytex",
+    "digest",
+    "testthat",
+    "processx",
+    "reshape2",
+    "data.table",
+    "readxl",
+    "xlsx",
+    "readr",
+    "dplyr",
+    "stringr",
+    "knitr",
+    "tidyr",
+    "foreign",
+    "DataExplorer",
+    "formattable",
+    "survival",
+    "xtable",
+    "officer",
+    "DescTools",
+    "DT",
+    "flextable",
+    "pander",
+    "descr",
+    "tables",
+    "visdat",
+    "xfun",
+    "tidytext",
+    "stringi",
+    "Matrix",
+    "hexbin",
+    "gganimate",
+    "gifski",
+    "png",
+    "transformr",
+    "av"
   )
 
 
 # Lista de paquetes adicionales que se instalan desde github
 
-pkgs_from_github <-
-  c(
-    "tidyverse/ggplot2",
-    "tidyverse/tibble"
-    )
-
+pkgs_from_github <- c("tidyverse/ggplot2")
 
 # Instalación de paquetes
 
-# Instalar paquetes de github primero
+# Instalar paquete devtools primero
 
 if (!require("devtools") & length(pkgs_from_github) > 0) {
-  install.packages("devtools", dependencies = TRUE, INSTALL_opts = '--no-lock')
+  install.packages("devtools")
   library(devtools)
 }
+
+# Instalar paquetes de github
 
 for (pkg_github in pkgs_from_github) {
   pkg_name <- strsplit(pkg_github,"/")[[1]][2] # get name after forward-slash
   if (!require(pkg_name, character.only = T, quietly = T)) {
-    devtools::install_github(pkg_github, dependencies = TRUE)
+    devtools::install_github(pkg_github,
+                             dependencies = TRUE,
+                             upgrade_dependencies = TRUE,
+                             upgrade = "always",
+                             force = TRUE,
+                             INSTALL_opts = '--no-lock'
+    )
     library(pkg_name, character.only = T)
   }
   library(pkg_name, character.only = T)
@@ -64,29 +114,36 @@ for (package in pkgs_from_github) {
 
 # Instalar el resto de packages
 
-new.packages <- packages
-
-# quitar comentario a la linea siguiente si desea instalar
-# solo paquetes nuevos en la lista packages
-
+new.packages <- packages #
+# Si desea instalar unicamente los paquetes
+# que no estan instalados actualmente en su pc
+# debe quitar el comentario en la siguiente linea
 # new.packages <- packages[!(packages %in% installed.packages()[, "Package"])]
 
 for (package in new.packages) {
   if (!require(package, character.only = T, quietly = T)) {
-    install.packages(package, dependencies = TRUE, INSTALL_opts = '--no-lock')
+    install.packages(package,
+                     dependencies = TRUE,
+                     upgrade_dependencies = TRUE,
+                     upgrade = "always",
+                     force = TRUE,
+                     INSTALL_opts = '--no-lock'
+    )
     library(package, character.only = T)
   }
   library(package, character.only = T)
 }
 
-# Cargar el resto de paquetes instalados
-for (package in packages) {
-  library(package, character.only = T)
-}
+
 
 # forzar instalacion de versiones especificas de paquetes
-devtools::install_version("tibble", version = "3.0.1", dependencies = TRUE)
-# repos = "http://cran.us.r-project.org"
+devtools::install_version("tibble", version = "3.0.1",
+                          dependencies = TRUE,
+                          upgrade_dependencies = TRUE,
+                          upgrade = "always",
+                          force = TRUE,
+                          INSTALL_opts = '--no-lock'
+                          )
 library(tibble)
 
 # Crear subdirectorios del proyecto
