@@ -66,13 +66,6 @@ ins_max_fecha_sin.cali <- with(df.ins.cali, max(fecha_sin, na.rm = TRUE))
 ins_min_fecha_sin.cali <- with(df.ins.cali, min(fecha_sin, na.rm = TRUE))
 
 
-# Palmira
-df.ins.palmira <- df.ins %>%
-  filter(codigo_divipola=="76520" | ciudad_de_ubicaci_n=="Palmira")
-write_csv(df.ins.palmira,
-          paste0("data/", "datos_ins_palmira.csv"))
-write_csv(df.ins.palmira,
-          paste0("data/", hoy, "-datos_ins-palmira-fecnot-", ins_max_fecha_not, ".csv"))
 
 
 # Buenaventura
@@ -82,12 +75,68 @@ write_csv(df.ins.bventura,
           paste0("data/", "datos_ins_bventura.csv"))
 write_csv(df.ins.bventura,
           paste0("data/", hoy, "-datos_ins-bventura-fecnot-", ins_max_fecha_not, ".csv"))
+ins_max_fecha_not.bventura <- with(df.ins.bventura, max(fecha_not, na.rm = TRUE))
+ins_min_fecha_not.bventura <- with(df.ins.bventura, min(fecha_not, na.rm = TRUE))
+ins_max_fecha_sin.bventura <- with(df.ins.bventura, max(fecha_sin, na.rm = TRUE))
+ins_min_fecha_sin.bventura <- with(df.ins.bventura, min(fecha_sin, na.rm = TRUE))
 
+# Palmira
+df.ins.palmira <- df.ins %>%
+  filter(codigo_divipola=="76520" | ciudad_de_ubicaci_n=="Palmira")
+write_csv(df.ins.palmira,
+          paste0("data/", "datos_ins_palmira.csv"))
+write_csv(df.ins.palmira,
+          paste0("data/", hoy, "-datos_ins-palmira-fecnot-", ins_max_fecha_not, ".csv"))
 
-# Valle del Cauca - >= 25 casos
+# Jamundi
+df.ins.jam <- df.ins %>%
+  filter(codigo_divipola=="76364")
+ins_max_fecha_not.jam <- with(df.ins.jam, max(fecha_not, na.rm = TRUE))
+ins_min_fecha_not.jam <- with(df.ins.jam, min(fecha_not, na.rm = TRUE))
+ins_max_fecha_sin.jam <- with(df.ins.jam, max(fecha_sin, na.rm = TRUE))
+ins_min_fecha_sin.jam <- with(df.ins.jam, min(fecha_sin, na.rm = TRUE))
+
+# Yumbo
+df.ins.yum <- df.ins %>%
+  filter(codigo_divipola=="76892")
+ins_max_fecha_not.yum <- with(df.ins.yum, max(fecha_not, na.rm = TRUE))
+ins_min_fecha_not.yum <- with(df.ins.yum, min(fecha_not, na.rm = TRUE))
+ins_max_fecha_sin.yum <- with(df.ins.yum, max(fecha_sin, na.rm = TRUE))
+ins_min_fecha_sin.yum <- with(df.ins.yum, min(fecha_sin, na.rm = TRUE))
+
+# Tulua
+df.ins.tul <- df.ins %>%
+  filter(codigo_divipola=="76834")
+ins_max_fecha_not.tul <- with(df.ins.tul, max(fecha_not, na.rm = TRUE))
+ins_min_fecha_not.tul <- with(df.ins.tul, min(fecha_not, na.rm = TRUE))
+ins_max_fecha_sin.tul <- with(df.ins.tul, max(fecha_sin, na.rm = TRUE))
+ins_min_fecha_sin.tul <- with(df.ins.tul, min(fecha_sin, na.rm = TRUE))
+
+# Valle del Cauca
 df.ins.valle <- df.ins %>%
   filter(codigo_divipola>="76000" & codigo_divipola<="76999")
 write_csv(df.ins.valle,
           paste0("data/", "datos_ins_valle.csv"))
 write_csv(df.ins.valle,
           paste0("data/", hoy, "-datos_ins-valle-fecnot-", ins_max_fecha_not, ".csv"))
+ins_max_fecha_not.valle <- with(df.ins.valle, max(fecha_not, na.rm = TRUE))
+ins_min_fecha_not.valle <- with(df.ins.valle, min(fecha_not, na.rm = TRUE))
+ins_max_fecha_sin.valle <- with(df.ins.valle, max(fecha_sin, na.rm = TRUE))
+ins_min_fecha_sin.valle <- with(df.ins.valle, min(fecha_sin, na.rm = TRUE))
+
+
+# Valle Resto
+df.ins.vre <- df.ins.valle %>%
+  filter(!(codigo_divipola %in% c("76001","76109","76520","76364","76892","76834")) )
+ins_max_fecha_not.vre <- with(df.ins.vre, max(fecha_not, na.rm = TRUE))
+ins_min_fecha_not.vre <- with(df.ins.vre, min(fecha_not, na.rm = TRUE))
+ins_max_fecha_sin.vre <- with(df.ins.vre, max(fecha_sin, na.rm = TRUE))
+ins_min_fecha_sin.vre <- with(df.ins.vre, min(fecha_sin, na.rm = TRUE))
+
+# Valle No Distritos
+df.ins.vnd <- df.ins.valle %>%
+  filter(!(codigo_divipola %in% c("76001","76109")) )
+ins_max_fecha_not.vnd <- with(df.ins.vnd, max(fecha_not, na.rm = TRUE))
+ins_min_fecha_not.vnd <- with(df.ins.vnd, min(fecha_not, na.rm = TRUE))
+ins_max_fecha_sin.vnd <- with(df.ins.vnd, max(fecha_sin, na.rm = TRUE))
+ins_min_fecha_sin.vnd <- with(df.ins.vnd, min(fecha_sin, na.rm = TRUE))
