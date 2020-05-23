@@ -15,8 +15,8 @@ if (!require(devtools)) {
 # Lista de paquetes a instalar
 
 paquetes <-
-  c("Rcpp", "ggpubr","gghighlight",
-    "RSocrata",  "rlang",
+  c("Rcpp", "ggpubr","gghighlight","tidyverse",
+    "RSocrata",  "rlang","remotes","ps",
     "here", "sf", "rgeos", "earlyR",
     "curl", "projections", "incidence", "EpiEstim",
     "rJava","bayesplot","cowplot","gridExtra", "ps",
@@ -38,25 +38,31 @@ paquetes_github <-
 
 # Instalación de paquetes
 
+# CRAN repo
 paquetes <- unique(paquetes)
-for(pqt in paquetes)
-  install.packages(pqt, dependencies = TRUE,
-                   INSTALL_opts = '--no-lock')
+paquetes_nuevos <- paquetes[!(paquetes %in% installed.packages()[, "Package"])]
+for(pqt in paquetes_nuevos)
+  install.packages(pqt, dependencies = TRUE, upgrade = "always")
 sapply(paquetes, require, character = TRUE)
 
+# Versiones espcificas - manual
+install_version("ps", version = "1.3.3",
+                dependencies = TRUE, upgrade = "always",
+               force = TRUE)
+require(ps)
+
+# Github
 paquetes_github     <- unique(paquetes_github)
 paquetes_github_nom <- vector("list", length(paquetes_github))
-
 i=0
 for (pqtgn in paquetes_github) {
   i = i + 1
   paquetes_github_nom[[i]] <- strsplit(pqtgn, "/")[[1]][2]
 }
 paquetes_github_nom <- unlist(paquetes_github_nom)
-
 for (pqtg in paquetes_github)
-  devtools::install_github(pqtg, dependencies = TRUE,
-                           INSTALL_opts = '--no-lock')
+  install_github(pqtg, dependencies = TRUE, upgrade = "always",
+                 force = TRUE)
 sapply(paquetes_github_nom, require, character = TRUE)
 
 
