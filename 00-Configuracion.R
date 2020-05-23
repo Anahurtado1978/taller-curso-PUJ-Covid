@@ -9,17 +9,14 @@ if (!require(devtools)) {
   library(devtools)
 }
 
-# Actualizar paquetes actualmente en su pc
-#  quitar comentario en la siguiente linea
-#  el proceso se demora ~20+ minutos en algunos casos
+# actualizar paquetes actualmente en su pc - demorado!
 # update.packages(ask = FALSE, dependencies = c('Suggests'))
 
 # Lista de paquetes a instalar
 
-lista_paquetes <-
-  c("tidyverse/ggplot2",
-    "forcats","ggpubr","gghighlight", "RSocrata",
-    "tidyverse", "rlang",
+paquetes <-
+  c("Rcpp", "forcats","ggpubr","gghighlight",
+    "RSocrata", "tidyverse", "rlang",
     "here", "sf", "rgeos", "earlyR",
     "curl", "projections", "incidence", "EpiEstim",
     "rJava","bayesplot","cowplot","gridExtra", "ps",
@@ -32,30 +29,34 @@ lista_paquetes <-
     "DT", "flextable", "pander", "descr", "tables",
     "visdat", "xfun", "tidytext","stringi", "Matrix",
     "hexbin","gganimate","gifski","png",
-    "tidyverse/tibble",
     "transformr","av"
     )
 
+paquetes_github <-
+  c("tidyverse/tibble", "tidyverse/ggplot2")
+
+
 # Instalación de paquetes
 
-lista_paquetes <- unique(lista_paquetes)
+paquetes <- unique(paquetes)
+for(pqt in paquetes)
+  install.packages(pqt, dependencies = TRUE)
+sapply(paquetes, require, character = TRUE)
 
-for (pqt in lista_paquetes) {
-  print(pqt)
-}
+paquetes_github     <- unique(paquetes_github)
+paquetes_github_nom <- vector("list", length(paquetes_github))
 
-pqt_nom <- ""
-for (pqt in lista_paquetes) {
-  print(pqt)
-  if ( grepl("/", pqt) ) {
-    pqt_nom <- as.name(strsplit(pqt,"/")[[1]][2])
-    devtools::install_github(pqt)
-  } else {
-    pqt_nom <- as.name(pqt)
-    install.packages(pqt_nom)
-  }
-  library(pqt_nom)
+i=0
+for (pqtgn in paquetes_github) {
+  i = i + 1
+  paquetes_github_nom[[i]] <- strsplit(pqtgn, "/")[[1]][2]
 }
+paquetes_github_nom <- unlist(paquetes_github_nom)
+
+for (pqtg in paquetes_github)
+  devtools::install_github(pqtg, dependencies = TRUE)
+sapply(paquetes_github_nom, require, character = TRUE)
+
 
 # Crear subdirectorios del proyecto
 
