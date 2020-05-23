@@ -6,11 +6,11 @@
 
 # usa el paquete pak para admin paquetes
 
-if (!require("pak")) {
+if (!require(pak)) {
   install.packages("pak")
   library(pak)
 }
-pak_setup(mode = "download", quiet = TRUE)
+pak_setup(mode = "auto", quiet = TRUE)
 
 # Actualizar paquetes actualmente en su pc
 #  quitar comentario en la siguiente linea
@@ -20,8 +20,7 @@ pak_setup(mode = "download", quiet = TRUE)
 # Lista de paquetes a instalar
 
 packages <-
-  c(
-    "tidyverse", "rlang",
+  c("tidyverse", "rlang",
     "forcats","ggpubr","gghighlight", "RSocrata",
     "here", "sf", "rgeos", "earlyR",
     "curl", "projections", "incidence", "EpiEstim",
@@ -34,10 +33,9 @@ packages <-
     "survival", "xtable", "officer", "DescTools",
     "DT", "flextable", "pander", "descr", "tables",
     "visdat", "xfun", "tidytext","stringi", "Matrix",
-    "hexbin","gganimate","gifski","png","transformr","av"
-    )
+    "hexbin","gganimate","gifski","png","transformr","av",
+    "tidyverse/tibble", "tidyverse/ggplot2")
 
-#     "tidyverse/tibble", "tidyverse/ggplot2"
 
 # Instalación de paquetes
 
@@ -45,13 +43,17 @@ new.packages <- unique(packages)
 # new.packages <- packages[!(packages %in% installed.packages()[, "Package"])]
 
 for (package in new.packages) {
+ (paste0("lista este ", package))
+}
+
+for (package in new.packages) {
+  pkg_name <- package
   if ( grepl("/", package) ) {
     pkg_name <- strsplit(package,"/")[[1]][2] # get name after forward-slash
-  } else {
-    pkg_name <- package
   }
   if (!require(pkg_name)) {
-    pak::pkg_install(package, upgrade = TRUE, ask = FALSE)
+    # pak::pkg_install(package, upgrade = TRUE, ask = FALSE)
+    (pkg_name)
     library(pkg_name)
   }
 }
