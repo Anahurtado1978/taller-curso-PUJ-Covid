@@ -49,6 +49,11 @@ write_csv(df.ins,
           paste0("data/", "datos_ins_colombia.csv"))
 write_csv(df.ins,
           paste0("data/", hoy, "-datos_ins-colombia-fecnot-", ins_max_fecha_not, ".csv"))
+ins_max_fecha_not <- with(df.ins, max(fecha_not, na.rm = TRUE))
+ins_min_fecha_not <- with(df.ins, min(fecha_not, na.rm = TRUE))
+ins_max_fecha_sin <- with(df.ins, max(fecha_sin, na.rm = TRUE))
+ins_min_fecha_sin <- with(df.ins, min(fecha_sin, na.rm = TRUE))
+saveRDS(df.ins, file = "data/Colombia.RDS")
 
 
 # Cali
@@ -58,14 +63,11 @@ write_csv(df.ins.cali,
           paste0("data/", "datos_ins_cali.csv"))
 write_csv(df.ins.cali,
           paste0("data/", hoy, "-datos_ins-cali-fecnot-", ins_max_fecha_not, ".csv"))
-
-# algunas fechas especificas
 ins_max_fecha_not.cali <- with(df.ins.cali, max(fecha_not, na.rm = TRUE))
 ins_min_fecha_not.cali <- with(df.ins.cali, min(fecha_not, na.rm = TRUE))
 ins_max_fecha_sin.cali <- with(df.ins.cali, max(fecha_sin, na.rm = TRUE))
 ins_min_fecha_sin.cali <- with(df.ins.cali, min(fecha_sin, na.rm = TRUE))
-
-
+saveRDS(df.ins.cali, file = "data/Cali.RDS")
 
 
 # Buenaventura
@@ -79,6 +81,8 @@ ins_max_fecha_not.bventura <- with(df.ins.bventura, max(fecha_not, na.rm = TRUE)
 ins_min_fecha_not.bventura <- with(df.ins.bventura, min(fecha_not, na.rm = TRUE))
 ins_max_fecha_sin.bventura <- with(df.ins.bventura, max(fecha_sin, na.rm = TRUE))
 ins_min_fecha_sin.bventura <- with(df.ins.bventura, min(fecha_sin, na.rm = TRUE))
+saveRDS(df.ins.bventura, file = "data/Bventura.RDS")
+
 
 # Palmira
 df.ins.palmira <- df.ins %>%
@@ -87,30 +91,41 @@ write_csv(df.ins.palmira,
           paste0("data/", "datos_ins_palmira.csv"))
 write_csv(df.ins.palmira,
           paste0("data/", hoy, "-datos_ins-palmira-fecnot-", ins_max_fecha_not, ".csv"))
+ins_max_fecha_not.palmira <- with(df.ins.palmira, max(fecha_not, na.rm = TRUE))
+ins_min_fecha_not.palmira <- with(df.ins.palmira, min(fecha_not, na.rm = TRUE))
+ins_max_fecha_sin.palmira <- with(df.ins.palmira, max(fecha_sin, na.rm = TRUE))
+ins_min_fecha_sin.palmira <- with(df.ins.palmira, min(fecha_sin, na.rm = TRUE))
+saveRDS(df.ins.palmira, file = "data/Palmira.RDS")
 
 # Jamundi
-df.ins.jam <- df.ins %>%
+df.ins.jamundi <- df.ins %>%
   filter(codigo_divipola=="76364")
-ins_max_fecha_not.jam <- with(df.ins.jam, max(fecha_not, na.rm = TRUE))
-ins_min_fecha_not.jam <- with(df.ins.jam, min(fecha_not, na.rm = TRUE))
-ins_max_fecha_sin.jam <- with(df.ins.jam, max(fecha_sin, na.rm = TRUE))
-ins_min_fecha_sin.jam <- with(df.ins.jam, min(fecha_sin, na.rm = TRUE))
+ins_max_fecha_not.jamundi <- with(df.ins.jamundi, max(fecha_not, na.rm = TRUE))
+ins_min_fecha_not.jamundi <- with(df.ins.jamundi, min(fecha_not, na.rm = TRUE))
+ins_max_fecha_sin.jamundi <- with(df.ins.jamundi, max(fecha_sin, na.rm = TRUE))
+ins_min_fecha_sin.jamundi <- with(df.ins.jamundi, min(fecha_sin, na.rm = TRUE))
+saveRDS(df.ins.jamundi, file = "data/Jamundi.RDS")
+
 
 # Yumbo
-df.ins.yum <- df.ins %>%
+df.ins.yumbo <- df.ins %>%
   filter(codigo_divipola=="76892")
-ins_max_fecha_not.yum <- with(df.ins.yum, max(fecha_not, na.rm = TRUE))
-ins_min_fecha_not.yum <- with(df.ins.yum, min(fecha_not, na.rm = TRUE))
-ins_max_fecha_sin.yum <- with(df.ins.yum, max(fecha_sin, na.rm = TRUE))
-ins_min_fecha_sin.yum <- with(df.ins.yum, min(fecha_sin, na.rm = TRUE))
+ins_max_fecha_not.yumbo <- with(df.ins.yumbo, max(fecha_not, na.rm = TRUE))
+ins_min_fecha_not.yumbo <- with(df.ins.yumbo, min(fecha_not, na.rm = TRUE))
+ins_max_fecha_sin.yumbo <- with(df.ins.yumbo, max(fecha_sin, na.rm = TRUE))
+ins_min_fecha_sin.yumbo <- with(df.ins.yumbo, min(fecha_sin, na.rm = TRUE))
+saveRDS(df.ins.yumbo, file = "data/Yumbo.RDS")
+
 
 # Tulua
-df.ins.tul <- df.ins %>%
+df.ins.tulua <- df.ins %>%
   filter(codigo_divipola=="76834")
-ins_max_fecha_not.tul <- with(df.ins.tul, max(fecha_not, na.rm = TRUE))
-ins_min_fecha_not.tul <- with(df.ins.tul, min(fecha_not, na.rm = TRUE))
-ins_max_fecha_sin.tul <- with(df.ins.tul, max(fecha_sin, na.rm = TRUE))
-ins_min_fecha_sin.tul <- with(df.ins.tul, min(fecha_sin, na.rm = TRUE))
+ins_max_fecha_not.tulua <- with(df.ins.tulua, max(fecha_not, na.rm = TRUE))
+ins_min_fecha_not.tulua <- with(df.ins.tulua, min(fecha_not, na.rm = TRUE))
+ins_max_fecha_sin.tulua <- with(df.ins.tulua, max(fecha_sin, na.rm = TRUE))
+ins_min_fecha_sin.tulua <- with(df.ins.tulua, min(fecha_sin, na.rm = TRUE))
+saveRDS(df.ins.tulua, file = "data/Tulua.RDS")
+
 
 # Valle del Cauca
 df.ins.valle <- df.ins %>%
@@ -123,20 +138,24 @@ ins_max_fecha_not.valle <- with(df.ins.valle, max(fecha_not, na.rm = TRUE))
 ins_min_fecha_not.valle <- with(df.ins.valle, min(fecha_not, na.rm = TRUE))
 ins_max_fecha_sin.valle <- with(df.ins.valle, max(fecha_sin, na.rm = TRUE))
 ins_min_fecha_sin.valle <- with(df.ins.valle, min(fecha_sin, na.rm = TRUE))
+saveRDS(df.ins.valle, file = "data/Valle.RDS")
 
 
 # Valle Resto
-df.ins.vre <- df.ins.valle %>%
+df.ins.valle.resto <- df.ins.valle %>%
   filter(!(codigo_divipola %in% c("76001","76109","76520","76364","76892","76834")) )
-ins_max_fecha_not.vre <- with(df.ins.vre, max(fecha_not, na.rm = TRUE))
-ins_min_fecha_not.vre <- with(df.ins.vre, min(fecha_not, na.rm = TRUE))
-ins_max_fecha_sin.vre <- with(df.ins.vre, max(fecha_sin, na.rm = TRUE))
-ins_min_fecha_sin.vre <- with(df.ins.vre, min(fecha_sin, na.rm = TRUE))
+ins_max_fecha_not.vre <- with(df.ins.valle.resto, max(fecha_not, na.rm = TRUE))
+ins_min_fecha_not.vre <- with(df.ins.valle.resto, min(fecha_not, na.rm = TRUE))
+ins_max_fecha_sin.vre <- with(df.ins.valle.resto, max(fecha_sin, na.rm = TRUE))
+ins_min_fecha_sin.vre <- with(df.ins.valle.resto, min(fecha_sin, na.rm = TRUE))
+saveRDS(df.ins.valle.resto, file = "data/Valle_resto.RDS")
+
 
 # Valle No Distritos
-df.ins.vnd <- df.ins.valle %>%
+df.ins.valle.nodis <- df.ins.valle %>%
   filter(!(codigo_divipola %in% c("76001","76109")) )
-ins_max_fecha_not.vnd <- with(df.ins.vnd, max(fecha_not, na.rm = TRUE))
-ins_min_fecha_not.vnd <- with(df.ins.vnd, min(fecha_not, na.rm = TRUE))
-ins_max_fecha_sin.vnd <- with(df.ins.vnd, max(fecha_sin, na.rm = TRUE))
-ins_min_fecha_sin.vnd <- with(df.ins.vnd, min(fecha_sin, na.rm = TRUE))
+ins_max_fecha_not.vnd <- with(df.ins.valle.nodis, max(fecha_not, na.rm = TRUE))
+ins_min_fecha_not.vnd <- with(df.ins.valle.nodis, min(fecha_not, na.rm = TRUE))
+ins_max_fecha_sin.vnd <- with(df.ins.valle.nodis, max(fecha_sin, na.rm = TRUE))
+ins_min_fecha_sin.vnd <- with(df.ins.valle.nodis, min(fecha_sin, na.rm = TRUE))
+saveRDS(df.ins.valle.nodis, file = "data/Valle_nodis.RDS")
