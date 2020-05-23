@@ -5,15 +5,18 @@ date: "5/23/2020"
 output: pdf_document
 ---
 
-```{r setup, include=FALSE}
+```{r configuracion, include = FALSE}
 chooseCRANmirror(graphics=FALSE, ind=1)
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
-
 # source("00-Configuracion.R")
 # source("10-Obtener-datos-INS.R")
+```
 
+
+```{r prep-datos-area}
 # definir el conjunto de analisis
-df.casos <- df.ins.valle
+area <- "Cali"
+df.casos <- df.ins.cali
 df.casos$persona <- 1.0
 
 # fecha actual
@@ -112,6 +115,8 @@ xt_max = as.Date(hoy) + lubridate::days(3)
 
 
 ```
+
+
 ```{r funcion-lineas-interv}
 
 agregar_lineas_interv <- function(p)
@@ -188,7 +193,7 @@ It_plot <- plot(inc.casos.tipo, stack = TRUE, border = "white") +
     date_breaks = "1 week",
     limits = c(xt_min, xt_max)
   ) +
-  ggtitle(paste0("Curva Epidémica, COVID-19, Valle del Cauca")) + 
+  ggtitle(paste0("Curva Epidémica, COVID-19, ",area)) + 
   theme(
     legend.position = "top",
     legend.direction = "horizontal",
@@ -198,7 +203,7 @@ It_plot <- plot(inc.casos.tipo, stack = TRUE, border = "white") +
 It_plot <- agregar_lineas_interv(It_plot)
 
 file_curva_pdf  <- 
-   paste0("salidas/", hoy, "-c19-curva-epidemica-final-", per_fin_not, ".pdf")
+   paste0("salidas/", hoy, "-",area,"-c19-curva-epidemica-final-", per_fin_not, ".pdf")
  
 ggsave(file_curva_pdf, plot = It_plot, height = 8, width = 11 )
 
@@ -231,7 +236,7 @@ It_plot_sexo <- plot(inc.casos.sexo, stack = TRUE, border = "white") +
     date_breaks = "1 week",
     limits = c(xt_min, xt_max)
   ) +
-  ggtitle(paste0("Curva Epidémica, COVID-19, Valle del Cauca")) + 
+  ggtitle(paste0("Curva Epidémica, COVID-19, ", area)) + 
   theme(
     legend.position = "top",
     legend.direction = "horizontal",
@@ -241,11 +246,174 @@ It_plot_sexo <- plot(inc.casos.sexo, stack = TRUE, border = "white") +
 It_plot_sexo <- agregar_lineas_interv(It_plot_sexo)
 
 file_curva_pdf  <- 
-   paste0("salidas/", hoy, "-c19-curva-epidemica-sexo-", per_fin_not, ".pdf")
+   paste0("salidas/", hoy, "-", area, "-c19-curva-epidemica-sexo-", per_fin_not, ".pdf")
  
 ggsave(file_curva_pdf, plot = It_plot_sexo, height = 8, width = 11 )
 
 It_plot_sexo
+
+```
+
+```{r simul-SI, warning=FALSE}
+
+# parametros estimacion
+
+mean_covid19_si <- 6.8 # 6.5
+sd_covid19_si   <- 4.7 # 0.62
+
+k = 3 # número de dias ponderados para estimar Rt en cada t
+
+t_start <- seq(2, nrow(inc.casos)-(k-1))   
+t_end <- t_start + (k-1)  
+
+res_Rt_periodo <- estimate_R(inc.casos, method = "uncertain_si",
+                  config = make_config(list(
+                  mean_si = mean_covid19_si,
+                  min_mean_si = 1.5, max_mean_si = 12.1, std_mean_si = 2.0, 
+                  std_si = sd_covid19_si,
+                  min_std_si = 1.5, max_std_si = 7.9, std_std_si = 2.0,
+                  n1 = 100, n2 = 100,
+                  t_start = t_start,
+                  t_end = t_end)))
+
+```
+
+# grafica SI
+
+```{r grafica-SI}
+
+plot_SI_periodo <- estimate_R_plots(res_Rt_periodo, what = "SI",
+                            legend = FALSE)
+
+plot_SI_periodo <- plot_SI_periodo + theme_pubclean() +
+  labs(x = "Intervalo Serial (dias)", y= "Frecuencia")  +
+  geom_vline(xintercept = mean_covid19_si , linetype="dashed", color = "orange" ) +
+  annotate("text", label = paste0(" Media = ",mean_covid19_si, " dias"),
+           x = mean_covid19_si, y = 0.8, hjust = 0) +
+  ggtitle(paste0("Intervalo Serial (distribuciones simuladas)"))
+
+file_curva_pdf  <- paste0("salidas/",hoy,"-", area, "-c19-distr-SI-per",".pdf")
+ggsave(file_curva_pdf, plot = plot_SI_periodo, height = 8, width = 11 )
+
+plot_SI_periodo
+
+```
+
+
+```{r funcion-intervenciones-rt}
+
+agregar_lineas_interv_rt <- function(p)
+{
+  p <- p + geom_vline(xintercept = fecha_cuarentena, linetype = "dashed", color = "red") +
+  annotate(
+    "text",
+    label = "Cuarentena",
+    x = fecha_cuarentena,
+    y = max_y,
+    hjust = 1, angle = 90, vjust = -0.2
+  ) +
+  geom_vline(xintercept = fecha_toquequeda, linetype = "dashed", color = "red") +
+  annotate(
+    "text",
+    label = "Toque de queda",
+    x = fecha_toquequeda,
+    y = max_y,
+    hjust = 1, angle = 90, vjust = -0.2
+  ) +
+  geom_vline(xintercept = fecha_cuarentena1, linetype = "dashed", color = "red") +
+  annotate(
+    "text",
+    label = "C. parcial",
+    x = fecha_cuarentena1,
+    y = max_y,
+    hjust = 1, angle = 90, vjust = -0.2
+  ) +
+    geom_vline(xintercept = fecha_cuarentena2, linetype = "dashed", color = "red") +
+  annotate(
+    "text",
+    label = "C. parcial",
+    x = fecha_cuarentena2,
+    y = max_y,
+    hjust = 1, angle = 90, vjust = -0.2
+  ) +
+  geom_vline(xintercept = fecha_cuarentena3, linetype = "dashed", color = "red") +
+  annotate(
+    "text",
+    label = "C. parcial",
+    x = fecha_cuarentena3,
+    y = max_y,
+    hjust = 1, angle = 90, vjust = -0.2
+  ) +
+  geom_vline(xintercept = per_ini_sin, linetype = "dashed", color = "red") +
+  annotate(
+    "text",
+    label = "1er caso",
+    x = per_ini_sin,
+    y = max_y,
+    hjust = 1, angle = 90, vjust = -0.2
+  ) +
+  geom_vline(xintercept = as.Date(hoy), linetype = "dashed", color = "green") +
+  annotate(
+    "text",
+    label = "Hoy",
+    x = as.Date(hoy),
+    y = max_y,
+    hjust = 1, angle = 90, vjust = -0.2
+  ) 
+  p
+}
+
+```
+
+
+
+```{r grafica-Rt-solo}
+
+plot_Rt_periodo <- estimate_R_plots(res_Rt_periodo, what = "R",
+                            legend = FALSE, options_R = list(col = "blue")) 
+
+# max Rt
+data_Rt_per_all <- plot_Rt_periodo[["data"]]
+max_y <- max(data_Rt_per_all[, "upper"], na.rm = TRUE) + 0.01
+
+# continuar plotting 
+plot_Rt_periodo <- plot_Rt_periodo + 
+  labs(x = "", y = expression(R[t]) ) +
+  scale_x_date(
+    date_labels = "%b %d",
+    date_breaks = "1 week",
+    limits = c(xt_min, xt_max)
+  ) +
+  scale_y_continuous(
+    breaks = c(0,1,seq(2, max_y, 2)),
+    limits = c(0, max_y)
+  ) +
+  theme_classic2() +
+  theme(
+    legend.position = "top",
+    legend.direction = "horizontal",
+    legend.title = element_blank()
+  ) +
+  ggtitle(paste0("Número efectivo de reproducción (Rt), COVID-19, ", area))  
+
+plot_Rt_periodo <- agregar_lineas_interv_rt(plot_Rt_periodo)
+
+file_curva_pdf  <- paste0("salidas/",hoy, "-", area, "-c19-curva-Rt-per",".pdf")
+
+ggsave(file_curva_pdf, plot = plot_Rt_periodo, height = 8, width = 11 )
+
+plot_Rt_periodo
+
+```
+
+```{r grafica-Rt-It, echo=FALSE, fig.height=10, message=FALSE, warning=FALSE, results='asis'}
+
+pg_Rt_It <- gridExtra::grid.arrange(plot_Rt_periodo, It_plot_final, ncol = 1)
+
+file_curva_pdf  <- paste0("salidas/",hoy, "-", area, "-c19-curva-Rt-vs-It-", per_fin_not, ".pdf")
+ggsave(file_curva_pdf, plot = pg_Rt_It, height = 8, width = 11 )
+
+pg_Rt_It
 
 ```
 
