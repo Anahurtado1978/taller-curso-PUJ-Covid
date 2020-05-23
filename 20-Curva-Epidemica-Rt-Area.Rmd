@@ -9,23 +9,8 @@ output:
 
 ```{r configuracion, include = FALSE}
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
-```
-
-
-```{r prep-datos-area}
-
-# definir el conjunto de analisis
-
-df.casos <- readRDS("data/Valle.RDS")
-area <- "Valle" # keep this label short
-
-df.casos$persona <- 1.0
-
-# fecha actual
-hoy <- format(Sys.Date(), "%Y-%m-%d")
 
 # Personalizar paletas de colores para las curvas epidemicas
-
 paleta_cf <- c(
   "Confirmados" = "orange",
   "Fallecidos"  = "blue"
@@ -41,6 +26,27 @@ paleta_sexo <- c(
   "M" = "red",
   "F"  = "blue"
 )
+
+```
+
+
+```{r prep-datos-area}
+
+# fecha actual
+hoy <- format(Sys.Date(), "%Y-%m-%d")
+
+# definir el conjunto de analisis
+df.casos <- readRDS("data/Bogota.RDS")
+area <- "Bogota" # keep this label short
+
+df.casos$persona <- 1.0
+
+# fechas intervenciones
+fecha_toquequeda  <- as.Date("2020-03-20")
+fecha_cuarentena  <- as.Date("2020-03-25")
+fecha_cuarentena1 <- as.Date("2020-04-13") # parcial cuarentena
+fecha_cuarentena2 <- as.Date("2020-04-27") # parcial cuarentena
+fecha_cuarentena3 <- as.Date("2020-05-11") # parcial cuarentena
 
 ```
 
@@ -86,13 +92,6 @@ df.casos %>%
 ## Curva Epidémica
 
 ```{r prep-inc-curva-epidemica}
-
-# fechas intervenciones
-fecha_toquequeda  <- as.Date("2020-03-20")
-fecha_cuarentena  <- as.Date("2020-03-25")
-fecha_cuarentena1 <- as.Date("2020-04-13") # parcial cuarentena
-fecha_cuarentena2 <- as.Date("2020-04-27") # parcial cuarentena
-fecha_cuarentena3 <- as.Date("2020-05-11") # parcial cuarentena
 
 # Fecha de notificacion mas reciente
 per_fin_not <- max(df.casos$fecha_not)

@@ -159,3 +159,21 @@ ins_min_fecha_not.vnd <- with(df.ins.valle.nodis, min(fecha_not, na.rm = TRUE))
 ins_max_fecha_sin.vnd <- with(df.ins.valle.nodis, max(fecha_sin, na.rm = TRUE))
 ins_min_fecha_sin.vnd <- with(df.ins.valle.nodis, min(fecha_sin, na.rm = TRUE))
 saveRDS(df.ins.valle.nodis, file = "data/Valle_nodis.RDS")
+
+# Medellin
+df.ins.medellin <- df.ins %>%
+  filter(codigo_divipola=="5001")
+ins_max_fecha_not.med <- with(df.ins.medellin, max(fecha_not, na.rm = TRUE))
+ins_min_fecha_not.med <- with(df.ins.medellin, min(fecha_not, na.rm = TRUE))
+ins_max_fecha_sin.med <- with(df.ins.medellin, max(fecha_sin, na.rm = TRUE))
+ins_min_fecha_sin.med <- with(df.ins.medellin, min(fecha_sin, na.rm = TRUE))
+saveRDS(df.ins.medellin, file = "data/Medellin.RDS")
+
+# Bogota
+df.ins.bogota <- df.ins %>%
+  filter(codigo_divipola=="11001")
+ins_max_fecha_not.bog <- with(df.ins.bogota, max(fecha_not, na.rm = TRUE))
+ins_min_fecha_not.bog <- with(df.ins.bogota, min(fecha_not, na.rm = TRUE))
+ins_max_fecha_sin.bog <- with(df.ins.bogota, max(fecha_sin, na.rm = TRUE))
+ins_min_fecha_sin.bog <- with(df.ins.bogota, min(fecha_sin, na.rm = TRUE))
+saveRDS(df.ins.bogota, file = "data/Bogota.RDS")
