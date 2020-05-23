@@ -6,6 +6,7 @@
 # Actualizar paquetes actualmente en su pc
 #  quitar comentario en la siguiente linea
 #  el proceso se demora ~20+ minutos en algunos casos
+
 # update.packages(ask = FALSE, dependencies = c('Suggests'))
 
 # Lista de paquetes a instalar
