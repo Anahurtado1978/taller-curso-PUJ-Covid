@@ -20,10 +20,11 @@ paquetes <-
     "here", "sf", "rgeos", "earlyR",
     "curl", "projections", "incidence", "EpiEstim",
     "rJava","bayesplot","cowplot","gridExtra", "ps",
-    "rmarkdown", "geoR", "usethis","glue",
+    "rmarkdown", "geoR", "glue",
     "tinytex","digest", "testthat","processx","reshape2",
     "data.table", "readxl",
-    "xlsx", "readr", "dplyr", "stringr", "knitr", "tidyr",
+    "xlsx", "readr", "dplyr", "stringr", "knitr", "kableExtra",
+    "tidyr",
     "foreign", "DataExplorer", "formattable",
     "survival", "xtable", "officer", "DescTools",
     "DT", "flextable", "pander", "descr", "tables",
@@ -45,12 +46,19 @@ for(pqt in paquetes_nuevos)
   install.packages(pqt, dependencies = TRUE, upgrade = "always")
 sapply(paquetes, require, character = TRUE)
 
-# Versiones espcificas - manual
-install_version("ps", version = "1.3.3",
-                dependencies = TRUE,
+# Versiones especificas - manual
+remotes::install_version("ps", version = "1.3.3",
+                dependencies = FALSE,
                 upgrade = "always",
                 force = TRUE)
 require(ps)
+
+remotes::install_version("usethis", version = "1.6.0",
+                dependencies = FALSE,
+                upgrade = "always",
+                force = TRUE)
+require(usethis)
+
 
 # Github
 paquetes_github     <- unique(paquetes_github)

@@ -1,19 +1,16 @@
 ---
-title: "20 Calcular Curva Epidemica para el Valle del Cauca"
-output:
-  html_document:
-    df_print: paged
+title: "20 Curva Epidemica y Rt por Area"
+author: "Edgar Munoz"
+date: "5/23/2020"
+output: pdf_document
 ---
 
-```{r configuracion, echo=FALSE}
-knitr::opts_chunk$set(
-	echo = FALSE,
-	message = FALSE,
-	warning = FALSE
-)
+```{r setup, include=FALSE}
+chooseCRANmirror(graphics=FALSE, ind=1)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 
-# source("00-Configuracion.R")
-# source("10-Obtener-datos-INS.R")
+source("00-Configuracion.R")
+source("10-Obtener-datos-INS.R")
 
 # definir el conjunto de analisis
 df.casos <- df.ins.valle
