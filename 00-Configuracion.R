@@ -15,63 +15,110 @@ if (!require(devtools)) {
 # Lista de paquetes a instalar
 
 paquetes <-
-  c("Rcpp", "ggpubr","gghighlight","tidyverse",
-    "RSocrata",  "rlang","remotes","ps",
-    "here", "sf", "rgeos", "earlyR",
-    "curl", "projections", "incidence", "EpiEstim",
-    "rJava","bayesplot","cowplot","gridExtra", "ps",
-    "rmarkdown", "geoR", "glue",
-    "tinytex","digest", "testthat","processx","reshape2",
-    "data.table", "readxl",
-    "xlsx", "readr", "dplyr", "stringr", "knitr", "kableExtra",
+  c(
+    "av",
+    "bayesplot",
+    "cowplot",
+    "curl",
+    "data.table",
+    "DataExplorer",
+    "descr",
+    "DescTools",
+    "digest",
+    "dplyr",
+    "DT",
+    "EpiEstim",
+    "flextable",
+    "forcats",
+    "foreign",
+    "formattable",
+    "geoR",
+    "gganimate",
+    "gghighlight",
+    "ggpubr",
+    "gifski",
+    "glue",
+    "gridExtra",
+    "hexbin",
+    "incidence",
+    "kableExtra",
+    "knitr",
+    "Matrix",
+    "magrittr",
+    "officer",
+    "pander",
+    "png",
+    "processx",
+    "projections",
+    "readr",
+    "readxl",
+    "reshape2",
+    "rgeos",
+    "rJava",
+    "rlang",
+    "rmarkdown",
+    "RSocrata",
+    "sf",
+    "stringi",
+    "stringr",
+    "survival",
+    "tables",
+    "tibble",
     "tidyr",
-    "foreign", "DataExplorer", "formattable",
-    "survival", "xtable", "officer", "DescTools",
-    "DT", "flextable", "pander", "descr", "tables",
-    "visdat", "xfun", "tidytext","stringi", "Matrix",
-    "hexbin","gganimate","gifski","png",
-    "transformr","av","forcats"
-    )
+    "tidytext",
+    "tinytex",
+    "transformr",
+    "visdat",
+    "xfun",
+    "xlsx",
+    "xtable"
+  )
 
-paquetes_github <-
-  c("tidyverse/tibble", "tidyverse/ggplot2")
-
+paquetes_github <- c(
+  "tidyverse/ggplot2",
+  "tidyverse/tibble"
+  )
 
 # Instalación de paquetes
 
 # CRAN repo
+
 paquetes <- unique(paquetes)
 paquetes_nuevos <- paquetes[!(paquetes %in% installed.packages()[, "Package"])]
+
 for(pqt in paquetes_nuevos)
   install.packages(pqt, dependencies = TRUE, upgrade = "always")
 sapply(paquetes, require, character = TRUE)
 
-# Versiones especificas - manual
-remotes::install_version("ps", version = "1.3.3",
-                dependencies = FALSE,
-                upgrade = "always",
-                force = TRUE)
-require(ps)
-
-remotes::install_version("usethis", version = "1.6.0",
-                dependencies = FALSE,
-                upgrade = "always",
-                force = TRUE)
-require(usethis)
-
-
 # Github
-paquetes_github     <- unique(paquetes_github)
-paquetes_github_nom <- vector("list", length(paquetes_github))
-i=0
+
+paquetes_github      <- unique(paquetes_github)
+paquetes_github_nom  <- vector("list", length(paquetes_github))
+paquetes_github_repo <- vector("list", length(paquetes_github))
+i = 0
 for (pqtgn in paquetes_github) {
   i = i + 1
-  paquetes_github_nom[[i]] <- strsplit(pqtgn, "/")[[1]][2]
+  paquetes_github_repo[[i]] <- strsplit(pqtgn, "/")[[1]][1]
+  paquetes_github_nom[[i]]  <- strsplit(pqtgn, "/")[[1]][2]
 }
-paquetes_github_nom <- unlist(paquetes_github_nom)
-for (pqtg in paquetes_github)
-  install_github(pqtg, dependencies = TRUE, upgrade = "always",
-                 force = TRUE)
+
+paquetes_github_nom  <- unlist(paquetes_github_nom)
+paquetes_github_repo <- unlist(paquetes_github_repo)
+
+df.paqs_github <- data.frame(
+  repo = paquetes_github_repo,
+  paquete = paquetes_github_nom,
+  repopaq = paste0(paquetes_github_repo, "/", paquetes_github_nom)
+)
+
+paquetes_github_nuevos <-
+  paquetes_github_nom[!(paquetes_github_nom %in% installed.packages()[, "Package"])]
+df.paqs_github_nuevos <- subset(df.paqs_github, paquete %in% paquetes_github_nuevos)
+
+paquetes_github_nuevos_full <- as.character( unlist(df.paqs_github_nuevos$repopaq))
+
+for (pqtg in paquetes_github_nuevos_full)
+  install_github(pqtg, dependencies = TRUE, upgrade = "always", force = TRUE)
 sapply(paquetes_github_nom, require, character = TRUE)
 
 
@@ -84,16 +131,6 @@ if (!dir.exists("imagenes"))  {dir.create("imagenes")}
 if (!dir.exists("funciones")) {dir.create("funciones")}
 if (!dir.exists("shapes"))    {dir.create("shapes")}
 
-
-# Funciones definidas por usuario
-
-# Funcion para corregir año en algunas fechas con error e.g. 1950
-
-correct_year <- function(xdate, year_ok) {
-  lubridate::make_date(year  = ifelse(year(xdate) < 2019,
-                                      as.numeric(year_ok),
-                                      year(xdate) ),
-                       month = month(xdate),
-                       day   = mday(xdate)
-  )
-}
+# cargar las funciones
+funciones <- list.files(path = "/funciones", full.names = TRUE)
+sapply(funciones, source)
