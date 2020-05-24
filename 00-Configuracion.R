@@ -3,6 +3,7 @@
 # 2. Crea subdirectorios
 # 3. Carga algunas funciones
 
+
 # instala devtools and backports
 
 if (!require(backports)) {
@@ -18,6 +19,7 @@ if (!require(devtools)) {
 
 # actualizar paquetes actualmente en su pc - demorado!
 # update.packages(ask = FALSE, dependencies = c('Suggests'))
+
 
 # Lista de paquetes a instalar
 
@@ -86,7 +88,9 @@ paquetes_github <- c(
   "tidyverse/tibble"
   )
 
+
 # Instalación de paquetes
+
 
 # CRAN repo
 
@@ -96,6 +100,7 @@ paquetes_nuevos <- paquetes[!(paquetes %in% installed.packages()[, "Package"])]
 for(pqt in paquetes_nuevos)
   install.packages(pqt, dependencies = TRUE, upgrade = "always")
 sapply(paquetes, require, character = TRUE)
+
 
 # Github
 
@@ -137,6 +142,7 @@ if (!dir.exists("figuras"))   {dir.create("figuras")}
 if (!dir.exists("imagenes"))  {dir.create("imagenes")}
 if (!dir.exists("funciones")) {dir.create("funciones")}
 if (!dir.exists("shapes"))    {dir.create("shapes")}
+
 
 # cargar las funciones
 
