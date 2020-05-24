@@ -3,12 +3,17 @@ title: "20 Curva Epidemica y Rt por Area"
 author: "Edgar Munoz"
 date: "5/23/2020"
 output:
+  word_document: default
+  pdf_document: default
   html_document:
     df_print: paged
 ---
 
 ```{r configuracion, include = FALSE}
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+
+source("00-Configuracion.R")
+source("10-Obtener-datos-INS.R")
 
 # Personalizar paletas de colores para las curvas epidemicas
 paleta_cf <- c(

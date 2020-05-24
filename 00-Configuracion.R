@@ -3,11 +3,18 @@
 # 2. Crea subdirectorios
 # 3. Carga algunas funciones
 
-# instala devtools - puede ser demorado
+# instala devtools and backports
+
+if (!require(backports)) {
+install.packages("backports")
+  library(backports)
+}
+
 if (!require(devtools)) {
   install.packages("devtools")
   library(devtools)
 }
+
 
 # actualizar paquetes actualmente en su pc - demorado!
 # update.packages(ask = FALSE, dependencies = c('Suggests'))
