@@ -1,11 +1,11 @@
 ---
-title: "Curva Epidemica y Rt para COVID-19"
-author: "Edgar Munoz"
+title: "Curva Epidémica y Número Efectivo de Reproducción (Rt) para COVID-19"
+author: "Edgar Muñoz, Stat, MS Epid - munoze@outlook.com"
 date: "5/23/2020"
 output:
-  pdf_document: default
   html_document:
     df_print: paged
+  pdf_document: default
   word_document: default
 ---
 
@@ -13,7 +13,10 @@ output:
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 
 source("00-Configuracion.R")
-# source("10-Obtener-datos-INS.R")
+
+# cargar las funciones
+funciones <- list.files(path = "funciones", full.names = TRUE)
+sapply(funciones, source)
 
 # Personalizar paletas de colores para las curvas epidemicas
 paleta_cf <- c(
@@ -55,52 +58,8 @@ fecha_cuarentena3 <- as.Date("2020-05-11") # parcial cuarentena
 
 ```
 
-## Distibución de Casos
 
-```{r distribucion-casos}
-
-df.casos %>%
-  group_by(municipio) %>%
-  summarise(
-    casos = n()
-    ) %>%
-  mutate(porcentaje = round((casos/sum(casos)*100))) %>%
-  arrange(desc(casos)) %>%
-  head(100) %>%
-  kable %>% 
-  kable_styling()
-
-kable(with(df.casos, addmargins(table(tipo))),
-      caption = "Distribución por tipo de caso importado/relacionado",
-      col.names = c("Tipo de caso importado/relacionado", "n")) %>%
-  kable_styling()
-
-kable(with(df.casos, addmargins(table(atenci_n))),
-      caption = "Distribución por tipo de atención médica (INS)",
-      col.names = c("Atención médica", "n")) %>%
-    kable_styling()
-
-kable(with(df.casos, addmargins(table(estado))),
-      caption = "Distribución por estado de salud (INS)",
-      col.names = c("Estado de salud", "n")) %>%
-    kable_styling()
-
-kable(with(df.casos, addmargins(table(sexo))),
-      caption = "Distribución por sexo",
-      col.names = c("Sexo", "n")) %>%
-    kable_styling()
-
-kable(with(df.casos, addmargins(table(tipo_caso))),
-      caption = "Distribución por tipo de caso confirmado",
-      col.names = c("Tipo de caso confirmado/fallecido", "n")) %>%
-    kable_styling()
-
-```
-
-
-## Curva Epidémica
-
-```{r prep-inc-curva-epidemica}
+```{r prep-inc-curva-epidemica, message=FALSE, warning=FALSE, include=FALSE}
 
 # Fecha de notificacion mas reciente
 per_fin_not <- max(df.casos$fecha_not)
@@ -110,13 +69,13 @@ per_fin_not <- max(df.casos$fecha_not)
 # Incidencia - datos para analisis
 
 # Fallecidos y Confirmados por fecha sintomas
-inc.casos   <- incidence(df.casos$fecha_sin)
+inc.casos   <- incidence(df.casos$fecha_sin) 
 max_ncasos  <- max(inc.casos$counts)
 per_ini_sin <- as.Date(min(inc.casos$dates))
 per_fin_sin <- as.Date(max(inc.casos$dates))
 
 # Incidencia - datos para figura por tipo de caso
-inc.casos.tipo <- incidence(df.casos$fecha_sin,
+inc.casos.tipo <- incidence(df.casos$fecha_sin,  
                             groups = df.casos$tipo_caso)
 
 # Eje x: 3 dias antes del 1er caso hasta 3 dias despues de hoy
@@ -192,7 +151,8 @@ agregar_lineas_interv <- function(p)
 
 ```
 
-```{r curva-epidemica-fn}
+
+```{r curva-epidemica-fn, message=FALSE, warning=FALSE, include=FALSE}
 
 It_plot <- plot(inc.casos.tipo, stack = TRUE, border = "white") +
   scale_fill_manual(values = paleta_cf, limits = names(paleta_cf)) +
@@ -224,47 +184,8 @@ It_plot
 ```
 
 
-```{r prep-inc-por-sexo}
 
-# Incidencia - datos para figura por sexo
-inc.casos.sexo <- incidence(df.casos$fecha_sin,
-                            groups = df.casos$sexo)
-
-
-```
-
-```{r curva-epidemica-por-sexo}
-
-# Generacion de la Curva - por Sexo
-
-It_plot_sexo <- plot(inc.casos.sexo, stack = TRUE, border = "white") +
-  scale_fill_manual(values = paleta_sexo, limits = names(paleta_sexo)) +
-  labs(x = "Fecha de Síntomas", y = "Casos")  +
-  theme_classic2() +
-  scale_x_date(
-    date_labels = "%b %d",
-    date_breaks = "1 week",
-    limits = c(xt_min, xt_max)
-  ) +
-  ggtitle(paste0("Curva Epidémica, COVID-19, ", area)) + 
-  theme(
-    legend.position = "top",
-    legend.direction = "horizontal",
-    legend.title = element_blank()
-  )
-
-It_plot_sexo <- agregar_lineas_interv(It_plot_sexo)
-
-file_curva_pdf  <- 
-   paste0("salidas/", hoy, "-", area, "-c19-curva-epidemica-sexo-", per_fin_not, ".pdf")
- 
-ggsave(file_curva_pdf, plot = It_plot_sexo, height = 8, width = 11 )
-
-It_plot_sexo
-
-```
-
-```{r simul-SI, warning=FALSE}
+```{r simul-SI, message=FALSE, warning=FALSE, include=FALSE}
 
 # parametros estimacion
 
@@ -288,9 +209,8 @@ res_Rt_periodo <- estimate_R(inc.casos, method = "uncertain_si",
 
 ```
 
-# grafica SI
 
-```{r grafica-SI}
+```{r grafica-SI, message=FALSE, warning=FALSE, include=FALSE}
 
 plot_SI_periodo <- estimate_R_plots(res_Rt_periodo, what = "SI",
                             legend = FALSE)
@@ -377,7 +297,7 @@ agregar_lineas_interv_rt <- function(p)
 
 
 
-```{r grafica-Rt-solo}
+```{r grafica-Rt-solo, include=FALSE}
 
 plot_Rt_periodo <- estimate_R_plots(res_Rt_periodo, what = "R",
                             legend = FALSE, options_R = list(col = "blue")) 
@@ -416,13 +336,113 @@ plot_Rt_periodo
 
 ```
 
-```{r grafica-Rt-It, echo=FALSE, fig.height=9, message=FALSE, warning=FALSE, results='asis'}
 
-pg_Rt_It <- gridExtra::grid.arrange(plot_Rt_periodo, It_plot_final, ncol = 1)
+```{r grafica-Rt-It-pdf, message=FALSE, warning=FALSE, include=FALSE}
+
+pg_Rt_It <- plot_Rt_It(plot_Rt_periodo, It_plot_final, ncol = 1)
 
 file_curva_pdf  <- paste0("salidas/",hoy, "-", area, "-c19-curva-Rt-vs-It-", per_fin_not, ".pdf")
+
 ggsave(file_curva_pdf, plot = pg_Rt_It, height = 8, width = 11 )
 
-pg_Rt_It
+```
+
+## Número Efectivo de Reproducción vs Curva Epidémica
+
+```{r grafica-Rt-It, echo=FALSE, fig.height=9, message=FALSE, warning=FALSE, results='asis'}
+
+plot_Rt_It(plot_Rt_periodo, It_plot_final, ncol = 1)
 
 ```
+
+
+## Curva epidémica por sexo
+
+
+```{r curva-epidemica-por-sexo}
+
+# Generacion de la Curva - por Sexo
+
+# Incidencia - datos para figura por sexo
+inc.casos.sexo <- incidence(df.casos$fecha_sin,
+                          groups = df.casos$sexo)
+
+# Figura - por Sexo
+
+It_plot_sexo <- plot(inc.casos.sexo, stack = TRUE, border = "white") +
+  scale_fill_manual(values = paleta_sexo, limits = names(paleta_sexo)) +
+  labs(x = "Fecha de Síntomas", y = "Casos")  +
+  theme_classic2() +
+  scale_x_date(
+    date_labels = "%b %d",
+    date_breaks = "1 week",
+    limits = c(xt_min, xt_max)
+  ) +
+  ggtitle(paste0("Curva Epidémica, COVID-19, ", area)) + 
+  theme(
+    legend.position = "top",
+    legend.direction = "horizontal",
+    legend.title = element_blank()
+  )
+
+It_plot_sexo <- agregar_lineas_interv(It_plot_sexo)
+
+file_curva_pdf  <- 
+   paste0("salidas/", hoy, "-", area, "-c19-curva-epidemica-sexo-", per_fin_not, ".pdf")
+ 
+ggsave(file_curva_pdf, plot = It_plot_sexo, height = 8, width = 11 )
+
+It_plot_sexo
+
+```
+
+
+## Distribución de casos
+
+
+```{r distribucion-casos}
+
+df.casos %>%
+  group_by(municipio) %>%
+  summarise(
+    casos = n()
+    ) %>%
+  mutate(porcentaje = round( (casos/sum(casos)*100),1)) %>%
+  arrange(desc(casos)) -> df.municipios
+
+kable(df.municipios, caption = "Distribución por municipio") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) %>%
+  scroll_box(width = "100%", height = "400px")
+
+kable( with(df.casos, addmargins(table(tipo))),
+      caption = "Distribución por tipo de caso importado/relacionado",
+      col.names = c("Tipo de caso importado/relacionado", "n")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
+kable(with(df.casos, addmargins(table(atenci_n))),
+      caption = "Distribución por tipo de atención médica (INS)",
+      col.names = c("Atención médica", "n")) %>%
+    kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
+kable(with(df.casos, addmargins(table(estado))),
+      caption = "Distribución por estado de salud (INS)",
+      col.names = c("Estado de salud", "n")) %>%
+    kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
+kable(with(df.casos, addmargins(table(sexo))),
+      caption = "Distribución por sexo",
+      col.names = c("Sexo", "n")) %>%
+    kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
+kable(with(df.casos, addmargins(table(tipo_caso))),
+      caption = "Distribución por tipo de caso confirmado",
+      col.names = c("Tipo de caso confirmado/fallecido", "n")) %>%
+    kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
+```
+
+Contacto: munoze@outlook.com
+Tel. +57 300-929-1044
+
+
+Colombia, 2020
