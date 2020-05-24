@@ -30,9 +30,13 @@ ins_min_fecha_sin <- with(df.ins, min(fecha_sin, na.rm = TRUE))
 df.ins$tipo_caso <- "Confirmados"
 df.ins$tipo_caso[which(df.ins$atenci_n=="Fallecido" | df.ins$estado=="Fallecido")] <- "Fallecidos"
 
+# renombrar algunos campos
+df.ins$municipio <- df.ins$ciudad_de_ubicaci_n
+
 # mover campos importantes (fechas, ajuste_) al principio
 df.ins <- df.ins %>%
   dplyr::select(id_de_caso,
+                municipio,
                 tipo_caso,
                 fecha_not,
                 fecha_sin,
@@ -58,7 +62,7 @@ saveRDS(df.ins, file = "data/Colombia.RDS")
 
 # Cali
 df.ins.cali <- df.ins %>%
-  filter(codigo_divipola=="76001" | ciudad_de_ubicaci_n=="Cali")
+  filter(codigo_divipola=="76001" | municipio=="Cali")
 write_csv(df.ins.cali,
           paste0("data/", "datos_ins_cali.csv"))
 write_csv(df.ins.cali,
@@ -72,7 +76,7 @@ saveRDS(df.ins.cali, file = "data/Cali.RDS")
 
 # Buenaventura
 df.ins.bventura <- df.ins %>%
-  filter(codigo_divipola=="76109" | ciudad_de_ubicaci_n=="Buenaventura")
+  filter(codigo_divipola=="76109" | municipio=="Buenaventura")
 write_csv(df.ins.bventura,
           paste0("data/", "datos_ins_bventura.csv"))
 write_csv(df.ins.bventura,
@@ -86,7 +90,7 @@ saveRDS(df.ins.bventura, file = "data/Bventura.RDS")
 
 # Palmira
 df.ins.palmira <- df.ins %>%
-  filter(codigo_divipola=="76520" | ciudad_de_ubicaci_n=="Palmira")
+  filter(codigo_divipola=="76520" | municipio=="Palmira")
 write_csv(df.ins.palmira,
           paste0("data/", "datos_ins_palmira.csv"))
 write_csv(df.ins.palmira,
@@ -99,7 +103,7 @@ saveRDS(df.ins.palmira, file = "data/Palmira.RDS")
 
 # Jamundi
 df.ins.jamundi <- df.ins %>%
-  filter(codigo_divipola=="76364")
+  filter(codigo_divipola=="76364" | municipio=="Jamundi")
 ins_max_fecha_not.jamundi <- with(df.ins.jamundi, max(fecha_not, na.rm = TRUE))
 ins_min_fecha_not.jamundi <- with(df.ins.jamundi, min(fecha_not, na.rm = TRUE))
 ins_max_fecha_sin.jamundi <- with(df.ins.jamundi, max(fecha_sin, na.rm = TRUE))
@@ -109,7 +113,7 @@ saveRDS(df.ins.jamundi, file = "data/Jamundi.RDS")
 
 # Yumbo
 df.ins.yumbo <- df.ins %>%
-  filter(codigo_divipola=="76892")
+  filter(codigo_divipola=="76892" | municipio=="Yumbo")
 ins_max_fecha_not.yumbo <- with(df.ins.yumbo, max(fecha_not, na.rm = TRUE))
 ins_min_fecha_not.yumbo <- with(df.ins.yumbo, min(fecha_not, na.rm = TRUE))
 ins_max_fecha_sin.yumbo <- with(df.ins.yumbo, max(fecha_sin, na.rm = TRUE))
@@ -119,7 +123,7 @@ saveRDS(df.ins.yumbo, file = "data/Yumbo.RDS")
 
 # Tulua
 df.ins.tulua <- df.ins %>%
-  filter(codigo_divipola=="76834")
+  filter(codigo_divipola=="76834" | municipio=="Tulua")
 ins_max_fecha_not.tulua <- with(df.ins.tulua, max(fecha_not, na.rm = TRUE))
 ins_min_fecha_not.tulua <- with(df.ins.tulua, min(fecha_not, na.rm = TRUE))
 ins_max_fecha_sin.tulua <- with(df.ins.tulua, max(fecha_sin, na.rm = TRUE))

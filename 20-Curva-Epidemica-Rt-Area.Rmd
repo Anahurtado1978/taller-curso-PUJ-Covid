@@ -1,12 +1,12 @@
 ---
-title: "20 Curva Epidemica y Rt por Area"
+title: "Curva Epidemica y Rt para COVID-19 en Bogotá"
 author: "Edgar Munoz"
 date: "5/23/2020"
 output:
-  word_document: default
   pdf_document: default
   html_document:
     df_print: paged
+  word_document: default
 ---
 
 ```{r configuracion, include = FALSE}
@@ -59,37 +59,46 @@ fecha_cuarentena3 <- as.Date("2020-05-11") # parcial cuarentena
 
 ```{r distribucion-casos}
 
-kable(with(df.casos, addmargins(table(tipo))),
-      caption = "Distribución por tipo [importado/relacionado]",
-      col.names = c("Tipo de caso", "n"))
-
-kable(with(df.casos, addmargins(table(atenci_n))),
-      caption = "Distribución por atención (INS)",
-      col.names = c("Atención", "n"))
-
-kable(with(df.casos, addmargins(table(estado))),
-      caption = "Distribución por estado (INS)",
-      col.names = c("Estado", "n"))
-
-kable(with(df.casos, addmargins(table(sexo))),
-      caption = "Distribución por sexo",
-      col.names = c("Tipo de caso", "n"))
-
-kable(with(df.casos, addmargins(table(tipo_caso))),
-      caption = "Distribución por tipo caso",
-      col.names = c("Tipo de caso", "n"))
-
-kable(with(df.casos, addmargins(table(ciudad_de_ubicaci_n))),
-      caption = "Distribución por municipio",
-      col.names = c("Municipio", "n"))
-
 df.casos %>%
-  group_by(ciudad_de_ubicaci_n) %>%
-  tally(name="casos") %>%
+  group_by(municipio) %>%
+  summarise(
+    casos = n()
+    ) %>%
   mutate(porcentaje = round((casos/sum(casos)*100))) %>%
   arrange(desc(casos)) %>%
   head(100) %>%
-  kable
+  kable %>% 
+  kable_styling()
+
+kable(with(df.casos, addmargins(table(tipo))),
+      caption = "Distribución por tipo de caso importado/relacionado",
+      col.names = c("Tipo de caso importado/relacionado", "n")) %>%
+  kable_styling()
+
+kable(with(df.casos, addmargins(table(atenci_n))),
+      caption = "Distribución por tipo de atención médica (INS)",
+      col.names = c("Atención médica", "n")) %>%
+    kable_styling()
+
+kable(with(df.casos, addmargins(table(estado))),
+      caption = "Distribución por estado de salud (INS)",
+      col.names = c("Estado de salud", "n")) %>%
+    kable_styling()
+
+kable(with(df.casos, addmargins(table(sexo))),
+      caption = "Distribución por sexo",
+      col.names = c("Sexo", "n")) %>%
+    kable_styling()
+
+kable(with(df.casos, addmargins(table(tipo_caso))),
+      caption = "Distribución por tipo de caso confirmado",
+      col.names = c("Tipo de caso confirmado/fallecido", "n")) %>%
+    kable_styling()
+
+kable(with(df.casos, addmargins(table(municipio))),
+      caption = "Distribución por municipio",
+      col.names = c("Municipio", "n")) %>%
+    kable_styling()
 
 ```
 
@@ -412,7 +421,7 @@ plot_Rt_periodo
 
 ```
 
-```{r grafica-Rt-It, echo=FALSE, fig.height=10, message=FALSE, warning=FALSE, results='asis'}
+```{r grafica-Rt-It, echo=FALSE, fig.height=9, message=FALSE, warning=FALSE, results='asis'}
 
 pg_Rt_It <- gridExtra::grid.arrange(plot_Rt_periodo, It_plot_final, ncol = 1)
 
@@ -422,11 +431,3 @@ ggsave(file_curva_pdf, plot = pg_Rt_It, height = 8, width = 11 )
 pg_Rt_It
 
 ```
-
-```{r final}
-
-pg_Rt_It
-
-```
-
-

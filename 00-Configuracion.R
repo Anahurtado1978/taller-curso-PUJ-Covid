@@ -139,5 +139,6 @@ if (!dir.exists("funciones")) {dir.create("funciones")}
 if (!dir.exists("shapes"))    {dir.create("shapes")}
 
 # cargar las funciones
+
 funciones <- list.files(path = "/funciones", full.names = TRUE)
 sapply(funciones, source)
