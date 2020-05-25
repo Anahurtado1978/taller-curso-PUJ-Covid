@@ -1,7 +1,7 @@
 ---
 title: "Curva Epidémica y Número Efectivo de Reproducción (Rt) para COVID-19"
 author: "Edgar Muñoz, Stat, MS Epid - munoze@outlook.com"
-date: "5/23/2020"
+date: "5/24/2020"
 output:
   html_document:
     df_print: paged
@@ -44,8 +44,8 @@ paleta_sexo <- c(
 hoy <- format(Sys.Date(), "%Y-%m-%d")
 
 # definir el conjunto de analisis
-df.casos <- readRDS("data/Valle.RDS")
-area <- "Valle" # keep this label short
+df.casos <- readRDS("data/Cali.RDS")
+area <- "Cali" # keep this label short
 
 df.casos$persona <- 1.0
 

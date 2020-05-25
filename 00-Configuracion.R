@@ -1,13 +1,40 @@
-# 00-Configuracion.R
-# 1. Instala los paquetes R requeridos
-# 2. Crea subdirectorios
-# 3. Carga algunas funciones
+## 00-configuracion.R ####
+
+# 1. Crea subdirectorios del proyecto
+# 2. Instala los paquetes R requeridos
+# 3. Carga funciones requeridas y tokens
 
 
-# instala devtools and backports
+# Quitar el comentario de la linea siguiente si desea
+# forzar actualizacion de todos los paquetes (DEMORADO!!!)
+# update.packages(ask = FALSE, dependencies = c('Suggests'))
+
+
+## Crear subdirectorios si no existen ####
+
+if (!dir.exists("data"))      {dir.create("data")}
+if (!dir.exists("salidas"))   {dir.create("salidas")}
+if (!dir.exists("figuras"))   {dir.create("figuras")}
+if (!dir.exists("imagenes"))  {dir.create("imagenes")}
+if (!dir.exists("shapes"))    {dir.create("shapes")}
+if (!dir.exists("funciones")) {dir.create("funciones")}
+if (!dir.exists("tokens"))    {dir.create("tokens")}
+
+
+## Cargar las funciones y tokens ####
+
+funciones <- list.files(path = "funciones", full.names = TRUE)
+sapply(funciones, source)
+
+tokens <- list.files(path = "tokens", full.names = TRUE)
+sapply(tokens, source)
+
+
+
+## Instala devtools and backports ####
 
 if (!require(backports)) {
-install.packages("backports")
+  install.packages("backports")
   library(backports)
 }
 
@@ -16,17 +43,13 @@ if (!require(devtools)) {
   library(devtools)
 }
 
-
-# actualizar paquetes actualmente en su pc - demorado!
-# update.packages(ask = FALSE, dependencies = c('Suggests'))
-
-
-# Lista de paquetes a instalar
+## Lista de paquetes CRAN a instalar ####
 
 paquetes <-
   c(
     "av",
     "bayesplot",
+    "boxr",
     "cowplot",
     "curl",
     "data.table",
@@ -83,67 +106,13 @@ paquetes <-
     "xtable"
   )
 
+instalar_paquetes_cran(paquetes)
+
+## Lista de paquetes github a installar ####
+
 paquetes_github <- c(
   "tidyverse/ggplot2",
   "tidyverse/tibble"
-  )
-
-
-# Instalación de paquetes
-
-
-# CRAN repo
-
-paquetes <- unique(paquetes)
-paquetes_nuevos <- paquetes[!(paquetes %in% installed.packages()[, "Package"])]
-
-for(pqt in paquetes_nuevos)
-  install.packages(pqt, dependencies = TRUE, upgrade = "always")
-sapply(paquetes, require, character = TRUE)
-
-
-# Github
-
-paquetes_github      <- unique(paquetes_github)
-paquetes_github_nom  <- vector("list", length(paquetes_github))
-paquetes_github_repo <- vector("list", length(paquetes_github))
-i = 0
-for (pqtgn in paquetes_github) {
-  i = i + 1
-  paquetes_github_repo[[i]] <- strsplit(pqtgn, "/")[[1]][1]
-  paquetes_github_nom[[i]]  <- strsplit(pqtgn, "/")[[1]][2]
-}
-
-paquetes_github_nom  <- unlist(paquetes_github_nom)
-paquetes_github_repo <- unlist(paquetes_github_repo)
-
-df.paqs_github <- data.frame(
-  repo = paquetes_github_repo,
-  paquete = paquetes_github_nom,
-  repopaq = paste0(paquetes_github_repo, "/", paquetes_github_nom)
 )
 
-paquetes_github_nuevos <-
-  paquetes_github_nom[!(paquetes_github_nom %in% installed.packages()[, "Package"])]
-df.paqs_github_nuevos <- subset(df.paqs_github, paquete %in% paquetes_github_nuevos)
-
-paquetes_github_nuevos_full <- as.character( unlist(df.paqs_github_nuevos$repopaq))
-
-for (pqtg in paquetes_github_nuevos_full)
-  install_github(pqtg, dependencies = TRUE, upgrade = "always", force = TRUE)
-sapply(paquetes_github_nom, require, character = TRUE)
-
-
-# Crear subdirectorios del proyecto
-
-if (!dir.exists("data"))      {dir.create("data")}
-if (!dir.exists("salidas"))   {dir.create("salidas")}
-if (!dir.exists("figuras"))   {dir.create("figuras")}
-if (!dir.exists("imagenes"))  {dir.create("imagenes")}
-if (!dir.exists("funciones")) {dir.create("funciones")}
-if (!dir.exists("shapes"))    {dir.create("shapes")}
-
-
-# cargar las funciones
-funciones <- list.files(path = "/funciones", full.names = TRUE)
-sapply(funciones, source)
+instalar_paquetes_github(paquetes_github)
