@@ -6,10 +6,10 @@ output:
     df_print: paged
 ---
 
-```{r configuracion, echo=FALSE}
+```{r configuracion, message=FALSE, warning=FALSE, include=FALSE}
 
-# source("00-Configuracion.R")
-# source("10-Obtener-datos-INS.R")
+source("00-Configuracion.R")
+source("10-leer-datos-rds-INS.R")
 
 knitr::opts_chunk$set(
 	echo = FALSE,

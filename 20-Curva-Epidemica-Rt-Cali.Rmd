@@ -3,9 +3,9 @@ title: "Curva Epidémica y Número Efectivo de Reproducción (Rt) para COVID-19"
 author: "Edgar Muñoz, Stat, MS Epid - munoze@outlook.com"
 date: "5/25/2020"
 output:
-  pdf_document: default
   html_document:
     df_print: paged
+  pdf_document: default
   word_document: default
 ---
 
@@ -13,6 +13,7 @@ output:
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 
 source("00-Configuracion.R")
+source("10-leer-datos-rds-INS.R")
 
 # cargar las funciones
 funciones <- list.files(path = "funciones", full.names = TRUE)
@@ -44,8 +45,8 @@ paleta_sexo <- c(
 hoy <- format(Sys.Date(), "%Y-%m-%d")
 
 # definir el conjunto de analisis
-df.casos <- readRDS("data/Valle.RDS")
-area <- "Valle" # keep this label short
+df.casos <- readRDS("data/Cali.RDS")
+area <- "Cali" # keep this label short
 
 df.casos$persona <- 1.0
 
