@@ -3,9 +3,9 @@ title: "Curva Epidémica y Número Efectivo de Reproducción (Rt) para COVID-19"
 author: "Edgar Muñoz, Stat, MS Epid - munoze@outlook.com"
 date: "5/25/2020"
 output:
-  pdf_document: default
   html_document:
     df_print: paged
+  pdf_document: default
   word_document: default
 ---
 
