@@ -3,9 +3,9 @@ title: "Curva Epidémica y Número Efectivo de Reproducción (Rt) para COVID-19"
 author: "Edgar Muñoz, Stat, MS Epid - munoze@outlook.com"
 date: "5/25/2020"
 output:
+  pdf_document: default
   html_document:
     df_print: paged
-  pdf_document: default
   word_document: default
 ---
 
@@ -13,6 +13,7 @@ output:
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 
 source("00-Configuracion.R")
+source("10-Obtener-datos-INS.R")
 
 # Personalizar paletas de colores para las curvas epidemicas
 paleta_cf <- c(
@@ -40,6 +41,7 @@ paleta_sexo <- c(
 hoy <- format(Sys.Date(), "%Y-%m-%d")
 
 # definir el conjunto de analisis
+
 df.casos <- readRDS("data/Valle.RDS")
 area <- "Valle" # keep this label short
 
@@ -396,7 +398,7 @@ It_plot_sexo
 ## Distribución de casos
 
 
-```{r distribucion-casos}
+```{r distribucion-casos, echo=FALSE, message=FALSE, warning=FALSE}
 
 df.casos %>%
   group_by(municipio) %>%
@@ -406,34 +408,27 @@ df.casos %>%
   mutate(porcentaje = round( (casos/sum(casos)*100),1)) %>%
   arrange(desc(casos)) -> df.municipios
 
-kable(df.municipios, caption = "Distribución por municipio") %>%
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) %>%
-  scroll_box(width = "100%", height = "400px")
+kable(df.municipios, caption = "Distribución por municipio") 
 
 kable( with(df.casos, addmargins(table(tipo))),
       caption = "Distribución por tipo de caso importado/relacionado",
-      col.names = c("Tipo de caso importado/relacionado", "n")) %>%
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+      col.names = c("Tipo de caso importado/relacionado", "n")) 
 
 kable(with(df.casos, addmargins(table(atenci_n))),
       caption = "Distribución por tipo de atención médica (INS)",
-      col.names = c("Atención médica", "n")) %>%
-    kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+      col.names = c("Atención médica", "n")) 
 
 kable(with(df.casos, addmargins(table(estado))),
       caption = "Distribución por estado de salud (INS)",
-      col.names = c("Estado de salud", "n")) %>%
-    kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+      col.names = c("Estado de salud", "n")) 
 
 kable(with(df.casos, addmargins(table(sexo))),
       caption = "Distribución por sexo",
-      col.names = c("Sexo", "n")) %>%
-    kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+      col.names = c("Sexo", "n")) 
 
 kable(with(df.casos, addmargins(table(tipo_caso))),
       caption = "Distribución por tipo de caso confirmado",
-      col.names = c("Tipo de caso confirmado/fallecido", "n")) %>%
-    kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+      col.names = c("Tipo de caso confirmado/fallecido", "n")) 
 
 ```
 
