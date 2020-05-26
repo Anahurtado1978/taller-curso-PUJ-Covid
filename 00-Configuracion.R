@@ -116,4 +116,3 @@ paquetes_github <- c(
 )
 
 instalar_paquetes_github(paquetes_github)
-

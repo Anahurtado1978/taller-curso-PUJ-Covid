@@ -7,21 +7,19 @@ output:
 ---
 
 ```{r configuracion, message=FALSE, warning=FALSE, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 
 source("00-Configuracion.R")
-source("10-leer-datos-rds-INS.R")
+source("12-Leer-datos-rds-INS.R")
 
-knitr::opts_chunk$set(
-	echo = FALSE,
-	message = FALSE,
-	warning = FALSE
-)
+# definir el conjunto de analisis
+df.casos <- readRDS("data/Valle.RDS")
+area <- "Valle" # keep this label short
 
 # fecha actual
 hoy <- format(Sys.Date(), "%Y-%m-%d")
 
 # Personalizar paletas de colores para las curvas epidemicas
-
 paleta_cf <- c(
   "Confirmados" = "orange",
   "Fallecidos"  = "blue"

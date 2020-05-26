@@ -13,7 +13,14 @@ output:
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 
 source("00-Configuracion.R")
-source("10-Obtener-datos-INS.R")
+source("12-Leer-datos-rds-INS.R")
+
+# definir el conjunto de analisis
+df.casos <- readRDS("data/Valle.RDS")
+area <- "Valle" # keep this label short
+
+# fecha actual
+hoy <- format(Sys.Date(), "%Y-%m-%d")
 
 # Personalizar paletas de colores para las curvas epidemicas
 paleta_cf <- c(
@@ -39,11 +46,6 @@ paleta_sexo <- c(
 
 # fecha actual
 hoy <- format(Sys.Date(), "%Y-%m-%d")
-
-# definir el conjunto de analisis
-
-df.casos <- readRDS("data/Valle.RDS")
-area <- "Valle" # keep this label short
 
 df.casos$persona <- 1.0
 
